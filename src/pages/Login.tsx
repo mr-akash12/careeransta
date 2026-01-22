@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Sparkles, Mail, Lock, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -15,20 +16,42 @@ const Login = () => {
   });
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { signIn, signInWithGoogle } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // TODO: Implement actual authentication
-    setTimeout(() => {
+    const { error } = await signIn(formData.email, formData.password);
+    
+    if (error) {
+      toast({
+        title: "Login failed",
+        description: error.message,
+        variant: "destructive",
+      });
       setIsLoading(false);
+    } else {
       toast({
         title: "Login successful!",
         description: "Redirecting to your dashboard...",
       });
       navigate("/dashboard");
-    }, 1500);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    const { error } = await signInWithGoogle();
+    
+    if (error) {
+      toast({
+        title: "Google login failed",
+        description: error.message,
+        variant: "destructive",
+      });
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -126,7 +149,13 @@ const Login = () => {
             </div>
           </div>
 
-          <Button variant="outline" className="w-full" type="button">
+          <Button 
+            variant="outline" 
+            className="w-full" 
+            type="button"
+            onClick={handleGoogleLogin}
+            disabled={isLoading}
+          >
             <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24">
               <path
                 fill="currentColor"
