@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Sparkles, Mail, Lock, Eye, EyeOff, User, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,24 +18,61 @@ const Signup = () => {
   });
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { signUp, signInWithGoogle, setUserRole } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setStep("role");
-  };
-
-  const handleRoleSelect = (role: "student" | "professional") => {
     setIsLoading(true);
     
-    // TODO: Implement actual registration
-    setTimeout(() => {
+    const { error } = await signUp(formData.email, formData.password, formData.name);
+    
+    if (error) {
+      toast({
+        title: "Signup failed",
+        description: error.message,
+        variant: "destructive",
+      });
       setIsLoading(false);
+    } else {
+      setIsLoading(false);
+      setStep("role");
+    }
+  };
+
+  const handleRoleSelect = async (role: "student" | "professional") => {
+    setIsLoading(true);
+    
+    const { error } = await setUserRole(role);
+    
+    if (error) {
+      toast({
+        title: "Failed to set role",
+        description: error.message,
+        variant: "destructive",
+      });
+      setIsLoading(false);
+    } else {
       toast({
         title: "Account created!",
         description: `Welcome aboard as a ${role}!`,
       });
       navigate("/dashboard");
-    }, 1500);
+    }
+  };
+
+  const handleGoogleSignup = async () => {
+    setIsLoading(true);
+    const { error } = await signInWithGoogle();
+    
+    if (error) {
+      toast({
+        title: "Google signup failed",
+        description: error.message,
+        variant: "destructive",
+      });
+      setIsLoading(false);
+    }
+    // On success, user will be redirected by OAuth flow
   };
 
   if (step === "role") {
@@ -109,6 +147,12 @@ const Signup = () => {
                 </div>
               </button>
             </div>
+
+            {isLoading && (
+              <p className="text-center text-sm text-muted-foreground mt-4">
+                Setting up your account...
+              </p>
+            )}
           </div>
         </div>
       </div>
@@ -205,8 +249,8 @@ const Signup = () => {
               </p>
             </div>
 
-            <Button type="submit" variant="hero" size="lg" className="w-full">
-              Continue
+            <Button type="submit" variant="hero" size="lg" className="w-full" disabled={isLoading}>
+              {isLoading ? "Creating account..." : "Continue"}
             </Button>
           </form>
 
@@ -219,7 +263,13 @@ const Signup = () => {
             </div>
           </div>
 
-          <Button variant="outline" className="w-full" type="button">
+          <Button 
+            variant="outline" 
+            className="w-full" 
+            type="button"
+            onClick={handleGoogleSignup}
+            disabled={isLoading}
+          >
             <svg className="h-4 w-4 mr-2" viewBox="0 0 24 24">
               <path
                 fill="currentColor"
