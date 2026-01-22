@@ -10,6 +10,9 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import RoleSelection from "./pages/RoleSelection";
+import AIInterview from "./pages/AIInterview";
+import LiveSessions from "./pages/LiveSessions";
+import ExamPractice from "./pages/ExamPractice";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,9 +30,12 @@ const App = () => {
                 <Route path="/" element={<Index />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
-                <Route path="/role-selection" element={<RoleSelection />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="/role-selection" element={<RoleSelection />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/ai-interview" element={<AIInterview />} />
+            <Route path="/live-sessions" element={<LiveSessions />} />
+            <Route path="/exam-practice" element={<ExamPractice />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </AuthProvider>
