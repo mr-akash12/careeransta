@@ -2,9 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* CareerAscend Design System
-   Professional career guidance platform with modern, trustworthy aesthetics
-   Colors: Deep Teal (trust/growth) + Warm Coral (action/energy)
+/* Focus Blue Design System
+   Student-friendly EdTech platform with calm, trustworthy aesthetics
+   Colors: Focus Blue (trust/clarity) + Amber (motivation/action)
 */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
@@ -12,116 +12,126 @@
 @layer base {
   :root {
     /* Core Surfaces */
-    --background: 210 25% 98%;
-    --foreground: 200 25% 12%;
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
 
     --card: 0 0% 100%;
-    --card-foreground: 200 25% 12%;
+    --card-foreground: 222 47% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 200 25% 12%;
+    --popover-foreground: 222 47% 11%;
 
-    /* Brand Colors - Deep Teal */
-    --primary: 175 65% 30%;
+    /* Brand Colors - Focus Blue */
+    --primary: 217 91% 53%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary - Light Teal */
-    --secondary: 175 40% 95%;
-    --secondary-foreground: 175 65% 25%;
+    /* Secondary - Calm Teal */
+    --secondary: 217 91% 96%;
+    --secondary-foreground: 217 91% 40%;
 
     /* Muted */
-    --muted: 210 20% 94%;
-    --muted-foreground: 200 15% 45%;
+    --muted: 214 32% 95%;
+    --muted-foreground: 215 16% 47%;
 
-    /* Accent - Warm Coral */
-    --accent: 12 85% 60%;
+    /* Accent - Motivating Amber */
+    --accent: 38 92% 50%;
     --accent-foreground: 0 0% 100%;
 
     /* Feature Colors */
-    --success: 160 65% 40%;
+    --success: 142 72% 37%;
     --success-foreground: 0 0% 100%;
     
-    --warning: 40 90% 55%;
-    --warning-foreground: 40 90% 15%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 38 92% 15%;
     
-    --info: 200 80% 50%;
+    --info: 217 91% 53%;
     --info-foreground: 0 0% 100%;
 
-    --destructive: 0 72% 55%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
     /* UI Elements */
-    --border: 210 20% 90%;
-    --input: 210 20% 92%;
-    --ring: 175 65% 30%;
+    --border: 214 32% 91%;
+    --input: 214 32% 93%;
+    --ring: 217 91% 53%;
 
     --radius: 0.75rem;
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(175 65% 30%) 0%, hsl(175 70% 40%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(12 85% 60%) 0%, hsl(25 85% 55%) 100%);
-    --gradient-hero: linear-gradient(180deg, hsl(210 25% 98%) 0%, hsl(175 30% 95%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(175 15% 98%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(217 91% 53%) 0%, hsl(217 91% 60%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(38 92% 50%) 0%, hsl(32 92% 48%) 100%);
+    --gradient-hero: linear-gradient(180deg, hsl(210 40% 98%) 0%, hsl(217 50% 96%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(217 30% 98%) 100%);
+    --gradient-success: linear-gradient(135deg, hsl(173 77% 26%) 0%, hsl(142 72% 37%) 100%);
 
     /* Shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(200 25% 12% / 0.05);
-    --shadow-md: 0 4px 6px -1px hsl(200 25% 12% / 0.08), 0 2px 4px -2px hsl(200 25% 12% / 0.05);
-    --shadow-lg: 0 10px 15px -3px hsl(200 25% 12% / 0.1), 0 4px 6px -4px hsl(200 25% 12% / 0.05);
-    --shadow-xl: 0 20px 25px -5px hsl(200 25% 12% / 0.1), 0 8px 10px -6px hsl(200 25% 12% / 0.05);
-    --shadow-primary: 0 8px 20px -4px hsl(175 65% 30% / 0.25);
-    --shadow-accent: 0 8px 20px -4px hsl(12 85% 60% / 0.25);
+    --shadow-sm: 0 1px 2px 0 hsl(222 47% 11% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(222 47% 11% / 0.08), 0 2px 4px -2px hsl(222 47% 11% / 0.05);
+    --shadow-lg: 0 10px 15px -3px hsl(222 47% 11% / 0.1), 0 4px 6px -4px hsl(222 47% 11% / 0.05);
+    --shadow-xl: 0 20px 25px -5px hsl(222 47% 11% / 0.1), 0 8px 10px -6px hsl(222 47% 11% / 0.05);
+    --shadow-primary: 0 8px 20px -4px hsl(217 91% 53% / 0.25);
+    --shadow-accent: 0 8px 20px -4px hsl(38 92% 50% / 0.25);
 
     /* Sidebar */
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 200 25% 25%;
-    --sidebar-primary: 175 65% 30%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 47% 20%;
+    --sidebar-primary: 217 91% 53%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 175 40% 95%;
-    --sidebar-accent-foreground: 175 65% 25%;
-    --sidebar-border: 210 20% 90%;
-    --sidebar-ring: 175 65% 30%;
+    --sidebar-accent: 217 91% 96%;
+    --sidebar-accent-foreground: 217 91% 40%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 217 91% 53%;
+
+    /* Exam Timer Colors */
+    --timer-normal: 217 91% 53%;
+    --timer-warning: 38 92% 50%;
+    --timer-critical: 0 72% 51%;
   }
 
   .dark {
-    --background: 200 25% 8%;
-    --foreground: 210 20% 95%;
+    --background: 222 47% 7%;
+    --foreground: 210 40% 98%;
 
-    --card: 200 20% 12%;
-    --card-foreground: 210 20% 95%;
+    --card: 222 47% 11%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 200 20% 12%;
-    --popover-foreground: 210 20% 95%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 175 60% 45%;
+    --primary: 217 91% 60%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 200 20% 18%;
-    --secondary-foreground: 175 50% 70%;
+    --secondary: 217 30% 18%;
+    --secondary-foreground: 217 80% 70%;
 
-    --muted: 200 20% 18%;
-    --muted-foreground: 210 15% 60%;
+    --muted: 217 30% 18%;
+    --muted-foreground: 215 20% 65%;
 
-    --accent: 12 80% 55%;
+    --accent: 38 90% 55%;
     --accent-foreground: 0 0% 100%;
 
-    --success: 160 55% 45%;
+    --success: 142 65% 45%;
     --success-foreground: 0 0% 100%;
 
-    --destructive: 0 65% 50%;
+    --destructive: 0 65% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 200 20% 20%;
-    --input: 200 20% 22%;
-    --ring: 175 60% 45%;
+    --border: 217 30% 20%;
+    --input: 217 30% 22%;
+    --ring: 217 91% 60%;
 
-    --sidebar-background: 200 25% 10%;
-    --sidebar-foreground: 210 20% 90%;
-    --sidebar-primary: 175 60% 45%;
+    --sidebar-background: 222 47% 9%;
+    --sidebar-foreground: 210 30% 90%;
+    --sidebar-primary: 217 91% 60%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 200 20% 18%;
-    --sidebar-accent-foreground: 175 50% 70%;
-    --sidebar-border: 200 20% 20%;
-    --sidebar-ring: 175 60% 45%;
+    --sidebar-accent: 217 30% 18%;
+    --sidebar-accent-foreground: 217 80% 70%;
+    --sidebar-border: 217 30% 20%;
+    --sidebar-ring: 217 91% 60%;
+
+    --timer-normal: 217 91% 60%;
+    --timer-warning: 38 90% 55%;
+    --timer-critical: 0 65% 55%;
   }
 }
 
@@ -155,6 +165,11 @@
     background-image: var(--gradient-accent);
   }
 
+  .text-gradient-success {
+    @apply bg-clip-text text-transparent;
+    background-image: var(--gradient-success);
+  }
+
   .bg-gradient-hero {
     background: var(--gradient-hero);
   }
@@ -171,12 +186,30 @@
     background: var(--gradient-card);
   }
 
+  .bg-gradient-success {
+    background: var(--gradient-success);
+  }
+
   .shadow-primary {
     box-shadow: var(--shadow-primary);
   }
 
   .shadow-accent {
     box-shadow: var(--shadow-accent);
+  }
+
+  /* Exam Timer States */
+  .timer-normal {
+    color: hsl(var(--timer-normal));
+  }
+
+  .timer-warning {
+    color: hsl(var(--timer-warning));
+  }
+
+  .timer-critical {
+    color: hsl(var(--timer-critical));
+    @apply animate-pulse;
   }
 
   .card-hover {
