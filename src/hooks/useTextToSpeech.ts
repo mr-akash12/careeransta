@@ -1,73 +1,53 @@
 import { useState, useCallback, useRef } from 'react';
-import { toast } from 'sonner';
 
 export const useTextToSpeech = () => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   const speak = useCallback(async (text: string) => {
     if (!text.trim()) return;
     
     setIsSpeaking(true);
     
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/elevenlabs-tts`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-          },
-          body: JSON.stringify({ 
-            text,
-            voiceId: 'JBFqnCBsd6RMkjVDRZzb' // George - professional male voice
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`TTS request failed: ${response.status}`);
-      }
-
-      const data = await response.json();
+    // Use browser's built-in speech synthesis (works everywhere, no API needed)
+    if ('speechSynthesis' in window) {
+      // Cancel any ongoing speech
+      window.speechSynthesis.cancel();
       
-      if (!data.success) {
-        throw new Error(data.error || 'TTS failed');
+      const utterance = new SpeechSynthesisUtterance(text);
+      utteranceRef.current = utterance;
+      
+      // Configure voice settings for natural speech
+      utterance.rate = 0.95;
+      utterance.pitch = 1;
+      utterance.volume = 1;
+      
+      // Try to get a good English voice
+      const voices = window.speechSynthesis.getVoices();
+      const preferredVoice = voices.find(v => 
+        v.lang.startsWith('en') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Premium'))
+      ) || voices.find(v => v.lang.startsWith('en'));
+      
+      if (preferredVoice) {
+        utterance.voice = preferredVoice;
       }
-
-      // Use data URI for base64 audio
-      const audioUrl = `data:audio/mpeg;base64,${data.audioContent}`;
-      const audio = new Audio(audioUrl);
-      audioRef.current = audio;
-
-      audio.onended = () => {
+      
+      utterance.onend = () => {
         setIsSpeaking(false);
+        utteranceRef.current = null;
       };
-
-      audio.onerror = () => {
+      
+      utterance.onerror = (event) => {
+        console.error('Speech synthesis error:', event);
         setIsSpeaking(false);
-        toast.error('Failed to play audio');
+        utteranceRef.current = null;
       };
-
-      await audio.play();
-    } catch (error) {
-      console.error('TTS error:', error);
+      
+      window.speechSynthesis.speak(utterance);
+    } else {
+      console.warn('Speech synthesis not supported');
       setIsSpeaking(false);
-      
-      // Fallback to browser TTS
-      if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.rate = 0.9;
-        utterance.pitch = 1;
-        utterance.onend = () => setIsSpeaking(false);
-        utterance.onerror = () => setIsSpeaking(false);
-        window.speechSynthesis.speak(utterance);
-        setIsSpeaking(true);
-      } else {
-        toast.error('Text-to-speech unavailable');
-      }
     }
   }, []);
 
@@ -79,6 +59,7 @@ export const useTextToSpeech = () => {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
     }
+    utteranceRef.current = null;
     setIsSpeaking(false);
   }, []);
 
