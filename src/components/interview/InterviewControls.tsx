@@ -71,7 +71,7 @@ export const InterviewControls = ({
             isListening && 'bg-primary ring-4 ring-primary/30'
           )}
           onClick={onToggleMic}
-          disabled={isLoading || isSpeaking}
+          disabled={isLoading}
         >
           {isListening ? (
             <Mic className="h-6 w-6 animate-pulse" />
