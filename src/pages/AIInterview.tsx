@@ -43,6 +43,11 @@ const AIInterview = () => {
   }, [startCamera, startInterview, resumeData, mode, speak]);
 
   const handleToggleMic = useCallback(() => {
+    // Stop AI speech when user wants to talk
+    if (isSpeaking) {
+      stopSpeaking();
+    }
+    
     if (isListening) {
       stopListening();
       if (transcript.trim()) {
@@ -52,16 +57,16 @@ const AIInterview = () => {
     } else {
       startListening();
     }
-  }, [isListening, stopListening, startListening, transcript, resetTranscript]);
+  }, [isListening, isSpeaking, stopListening, stopSpeaking, startListening, transcript, resetTranscript]);
 
   const handleSendResponse = useCallback(async (text: string) => {
-    if (!text.trim() || isLoading || isSpeaking) return;
+    if (!text.trim() || isLoading) return;
     stopSpeaking();
     const message = await respondToAI(text, mode);
     if (message) {
       speak(message);
     }
-  }, [isLoading, isSpeaking, stopSpeaking, respondToAI, mode, speak]);
+  }, [isLoading, stopSpeaking, respondToAI, mode, speak]);
 
   const handleSendText = useCallback(() => {
     if (textInput.trim()) {
