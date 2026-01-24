@@ -55,26 +55,33 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-hero flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Background effects */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-glow-orange opacity-40" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-glow-purple opacity-30" />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,122,24,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,122,24,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
+      </div>
+
+      <div className="w-full max-w-md relative z-10">
         {/* Back Link */}
         <Link
           to="/"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-8"
         >
           <ArrowLeft className="h-4 w-4" />
           Back to home
         </Link>
 
         {/* Card */}
-        <div className="bg-card border border-border rounded-2xl shadow-large p-8 animate-scale-in">
+        <div className="bg-card border border-border rounded-2xl shadow-xl p-8 animate-scale-in">
           {/* Logo */}
           <div className="flex items-center justify-center gap-2 mb-8">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
-              <Sparkles className="h-5 w-5 text-primary-foreground" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-primary shadow-primary">
+              <Sparkles className="h-5 w-5 text-white" />
             </div>
             <span className="font-display text-2xl font-bold text-foreground">
-              CareerAscend
+              Career<span className="text-gradient-primary">Ascend</span>
             </span>
           </div>
 
@@ -96,7 +103,7 @@ const Login = () => {
                   id="email"
                   type="email"
                   placeholder="you@example.com"
-                  className="pl-10"
+                  className="pl-10 bg-muted border-border focus:border-primary"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
@@ -120,7 +127,7 @@ const Login = () => {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
-                  className="pl-10 pr-10"
+                  className="pl-10 pr-10 bg-muted border-border focus:border-primary"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   required
@@ -128,7 +135,7 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>

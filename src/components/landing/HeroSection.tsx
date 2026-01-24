@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Play, CheckCircle2 } from "lucide-react";
+import { ArrowRight, Play, CheckCircle2, Sparkles } from "lucide-react";
 
 const HeroSection = () => {
   const highlights = [
@@ -11,20 +11,25 @@ const HeroSection = () => {
 
   return (
     <section className="relative min-h-screen flex items-center pt-20 pb-16 overflow-hidden bg-gradient-hero">
-      {/* Background Elements */}
+      {/* Background Glow Effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/3 rounded-full blur-3xl" />
+        {/* Orange glow - top right */}
+        <div className="absolute -top-40 right-0 w-[600px] h-[600px] bg-glow-orange opacity-60" />
+        {/* Purple glow - bottom left */}
+        <div className="absolute -bottom-40 -left-20 w-[500px] h-[500px] bg-glow-purple opacity-50" />
+        {/* Center subtle glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-glow-orange opacity-20" />
+        {/* Grid pattern overlay */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,122,24,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,122,24,0.03)_1px,transparent_1px)] bg-[size:60px_60px]" />
       </div>
 
       <div className="container mx-auto px-4 lg:px-8 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary border border-primary/10 mb-8 animate-fade-in">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted border border-border mb-8 animate-fade-in">
             <span className="flex h-2 w-2 rounded-full bg-success animate-pulse" />
-            <span className="text-sm font-medium text-secondary-foreground">
-              Trusted by 10,000+ Students & Professionals
+            <span className="text-sm font-medium text-muted-foreground">
+              Trusted by <span className="text-primary">10,000+</span> Students & Professionals
             </span>
           </div>
 
@@ -39,7 +44,7 @@ const HeroSection = () => {
 
           {/* Subtitle */}
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-8 animate-slide-up" style={{ animationDelay: "0.1s" }}>
-            Ace your next interview with AI-powered practice, connect with industry experts for personalized guidance, and master exams with smart evaluation.
+            Ace your next interview with <span className="text-primary">AI-powered practice</span>, connect with industry experts for personalized guidance, and master exams with smart evaluation.
           </p>
 
           {/* Highlights */}
@@ -47,9 +52,9 @@ const HeroSection = () => {
             {highlights.map((item) => (
               <div
                 key={item}
-                className="flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border shadow-soft"
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-card border border-border hover:border-primary/50 transition-colors duration-200"
               >
-                <CheckCircle2 className="h-4 w-4 text-success" />
+                <CheckCircle2 className="h-4 w-4 text-primary" />
                 <span className="text-sm font-medium text-foreground">{item}</span>
               </div>
             ))}
@@ -59,12 +64,13 @@ const HeroSection = () => {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up" style={{ animationDelay: "0.3s" }}>
             <Link to="/signup">
               <Button variant="hero" size="xl" className="group">
+                <Sparkles className="h-5 w-5" />
                 Start Free Today
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Button variant="outline" size="xl" className="group">
-              <Play className="h-5 w-5 mr-1" />
+            <Button variant="heroOutline" size="xl" className="group">
+              <Play className="h-5 w-5 text-primary" />
               Watch Demo
             </Button>
           </div>
@@ -74,9 +80,12 @@ const HeroSection = () => {
             <p className="text-sm text-muted-foreground mb-6">
               Helping students land jobs at top companies
             </p>
-            <div className="flex flex-wrap justify-center items-center gap-8 opacity-60">
+            <div className="flex flex-wrap justify-center items-center gap-8">
               {["Google", "Microsoft", "Amazon", "Meta", "Apple"].map((company) => (
-                <span key={company} className="text-lg font-display font-semibold text-muted-foreground">
+                <span 
+                  key={company} 
+                  className="text-lg font-display font-semibold text-muted-foreground/60 hover:text-primary transition-colors duration-200"
+                >
                   {company}
                 </span>
               ))}
