@@ -3,25 +3,36 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Brain, ArrowLeft, Sparkles } from 'lucide-react';
 import { ResumeUpload } from '@/components/interview/ResumeUpload';
-import { ModeSelector } from '@/components/interview/ModeSelector';
-import { PreInterviewChecklist } from '@/components/interview/PreInterviewChecklist';
-import { CameraDisplay } from '@/components/interview/CameraDisplay';
-import { InterviewerAvatar } from '@/components/interview/InterviewerAvatar';
-import { ConversationPanel } from '@/components/interview/ConversationPanel';
-import { InterviewControls } from '@/components/interview/InterviewControls';
+import { SetupConfigStep } from '@/components/interview/SetupConfigStep';
+import { PermissionRequest } from '@/components/interview/PermissionRequest';
+import { InterviewSession } from '@/components/interview/InterviewSession';
+import { StepTabs } from '@/components/interview/StepTabs';
 import { FeedbackReport } from '@/components/interview/FeedbackReport';
 import { useInterviewAI, type InterviewMode } from '@/hooks/useInterviewAI';
 import { useTextToSpeech } from '@/hooks/useTextToSpeech';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { useCamera } from '@/hooks/useCamera';
 
-type Step = 'upload' | 'checklist' | 'interview' | 'feedback';
+type Step = 'details' | 'config' | 'permission' | 'interview' | 'feedback';
 
 const AIInterview = () => {
-  const [step, setStep] = useState<Step>('upload');
-  const [mode, setMode] = useState<InterviewMode>('standard');
-  const [textInput, setTextInput] = useState('');
+  const [step, setStep] = useState<Step>('details');
   const [resumeData, setResumeData] = useState({ content: '', role: '' });
+  
+  // Config state
+  const [duration, setDuration] = useState<'15' | '30' | '60'>('15');
+  const [interviewType, setInterviewType] = useState('');
+  const [interviewRound, setInterviewRound] = useState('');
+  const [customInstructions, setCustomInstructions] = useState('');
+  const [showCustomInstructions, setShowCustomInstructions] = useState(false);
+  
+  // Permission state
+  const [cameraGranted, setCameraGranted] = useState(false);
+  const [micGranted, setMicGranted] = useState(false);
+  const [isRequestingAccess, setIsRequestingAccess] = useState(false);
+  
+  // Session state
+  const [sessionStarted, setSessionStarted] = useState(false);
 
   const { isLoading, conversationHistory, feedback, startInterview, respondToAI, endInterview, reset } = useInterviewAI();
   const { isSpeaking, speak, stop: stopSpeaking } = useTextToSpeech();
@@ -30,20 +41,66 @@ const AIInterview = () => {
 
   const handleUpload = useCallback((content: string, role: string) => {
     setResumeData({ content, role });
-    setStep('checklist');
+    setStep('config');
   }, []);
 
-  const handleReady = useCallback(async () => {
-    await startCamera();
-    const message = await startInterview(resumeData.content, resumeData.role, mode);
-    if (message) {
+  const handleConfigNext = useCallback(() => {
+    setStep('permission');
+  }, []);
+
+  const handleRequestAccess = useCallback(async () => {
+    setIsRequestingAccess(true);
+    try {
+      // Request camera
+      await navigator.mediaDevices.getUserMedia({ video: true });
+      setCameraGranted(true);
+      
+      // Request microphone
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+      setMicGranted(true);
+      
+      // Start camera
+      await startCamera();
+      
+      // Move to interview
       setStep('interview');
+    } catch (error) {
+      console.error('Permission error:', error);
+    } finally {
+      setIsRequestingAccess(false);
+    }
+  }, [startCamera]);
+
+  const handleStartSession = useCallback(async () => {
+    // Map interview type to mode
+    const modeMap: Record<string, InterviewMode> = {
+      'Behavioral': 'friendly',
+      'Technical / Coding': 'standard',
+      'System Design': 'stress',
+    };
+    const mode = modeMap[interviewType] || 'standard';
+    
+    // Build enhanced instructions
+    const instructions = [
+      `Interview Type: ${interviewType}`,
+      `Interview Round: ${interviewRound}`,
+      `Duration: ${duration} minutes`,
+      customInstructions && `Custom Instructions: ${customInstructions}`,
+    ].filter(Boolean).join('\n');
+    
+    const message = await startInterview(
+      resumeData.content + '\n\n' + instructions,
+      resumeData.role,
+      mode
+    );
+    
+    if (message) {
+      setSessionStarted(true);
       speak(message);
     }
-  }, [startCamera, startInterview, resumeData, mode, speak]);
+  }, [interviewType, interviewRound, duration, customInstructions, resumeData, startInterview, speak]);
 
   const handleToggleMic = useCallback(() => {
-    // Stop AI speech when user wants to talk
     if (isSpeaking) {
       stopSpeaking();
     }
@@ -62,20 +119,21 @@ const AIInterview = () => {
   const handleSendResponse = useCallback(async (text: string) => {
     if (!text.trim() || isLoading) return;
     stopSpeaking();
+    
+    const modeMap: Record<string, InterviewMode> = {
+      'Behavioral': 'friendly',
+      'Technical / Coding': 'standard',
+      'System Design': 'stress',
+    };
+    const mode = modeMap[interviewType] || 'standard';
+    
     const message = await respondToAI(text, mode);
     if (message) {
       speak(message);
     }
-  }, [isLoading, stopSpeaking, respondToAI, mode, speak]);
+  }, [isLoading, stopSpeaking, respondToAI, interviewType, speak]);
 
-  const handleSendText = useCallback(() => {
-    if (textInput.trim()) {
-      handleSendResponse(textInput);
-      setTextInput('');
-    }
-  }, [textInput, handleSendResponse]);
-
-  const handleEndInterview = useCallback(async () => {
+  const handleEndSession = useCallback(async () => {
     stopListening();
     stopSpeaking();
     stopCamera();
@@ -85,8 +143,16 @@ const AIInterview = () => {
 
   const handleStartNew = useCallback(() => {
     reset();
-    setStep('upload');
+    setStep('details');
     setResumeData({ content: '', role: '' });
+    setDuration('15');
+    setInterviewType('');
+    setInterviewRound('');
+    setCustomInstructions('');
+    setShowCustomInstructions(false);
+    setCameraGranted(false);
+    setMicGranted(false);
+    setSessionStarted(false);
   }, [reset]);
 
   useEffect(() => {
@@ -96,6 +162,14 @@ const AIInterview = () => {
       stopListening();
     };
   }, []);
+
+  const getStepNumber = () => {
+    switch (step) {
+      case 'details': return 1;
+      case 'config': return 2;
+      default: return 0;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -119,7 +193,15 @@ const AIInterview = () => {
       </header>
 
       <main className="flex-1 container mx-auto px-4 lg:px-8 py-8">
-        {step === 'upload' && (
+        {/* Step Tabs for details/config */}
+        {(step === 'details' || step === 'config') && (
+          <StepTabs 
+            currentStep={getStepNumber()} 
+            steps={['Add Details', 'Setup Config']} 
+          />
+        )}
+
+        {step === 'details' && (
           <div className="max-w-xl mx-auto space-y-6">
             <div className="text-center mb-8">
               <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-primary mb-4">
@@ -128,48 +210,58 @@ const AIInterview = () => {
               <h1 className="font-display text-3xl font-bold text-foreground mb-2">AI Mock Interview</h1>
               <p className="text-muted-foreground">Practice with our AI interviewer and get personalized feedback</p>
             </div>
-            <ModeSelector selectedMode={mode} onModeChange={setMode} />
             <ResumeUpload onUpload={handleUpload} isLoading={isLoading} />
           </div>
         )}
 
-        {step === 'checklist' && (
-          <div className="max-w-md mx-auto">
-            <PreInterviewChecklist onReady={handleReady} />
+        {step === 'config' && (
+          <div className="max-w-xl mx-auto">
+            <SetupConfigStep
+              duration={duration}
+              interviewType={interviewType}
+              interviewRound={interviewRound}
+              customInstructions={customInstructions}
+              showCustomInstructions={showCustomInstructions}
+              onDurationChange={setDuration}
+              onInterviewTypeChange={setInterviewType}
+              onInterviewRoundChange={setInterviewRound}
+              onCustomInstructionsChange={setCustomInstructions}
+              onToggleCustomInstructions={setShowCustomInstructions}
+              onNext={handleConfigNext}
+              onPrev={() => setStep('details')}
+            />
+          </div>
+        )}
+
+        {step === 'permission' && (
+          <div className="max-w-2xl mx-auto">
+            <PermissionRequest
+              cameraGranted={cameraGranted}
+              micGranted={micGranted}
+              onRequestAccess={handleRequestAccess}
+              isRequesting={isRequestingAccess}
+            />
           </div>
         )}
 
         {step === 'interview' && (
-          <div className="h-[calc(100vh-10rem)] flex flex-col">
-            <div className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-4 min-h-0">
-              <div className="lg:col-span-2 grid grid-rows-2 gap-4">
-                <InterviewerAvatar isSpeaking={isSpeaking} className="h-full min-h-[200px]" />
-                <CameraDisplay stream={stream} isActive={isCameraActive} className="h-full min-h-[200px]" />
-              </div>
-              <div className="bg-card border border-border rounded-2xl flex flex-col min-h-[400px] lg:min-h-0">
-                <div className="p-3 border-b border-border">
-                  <h3 className="font-medium text-sm">Conversation</h3>
-                </div>
-                <div className="flex-1 overflow-hidden">
-                  <ConversationPanel 
-                    messages={conversationHistory} 
-                    currentTranscript={isListening ? (transcript + ' ' + interimTranscript).trim() : undefined}
-                    isAISpeaking={isLoading}
-                  />
-                </div>
-              </div>
-            </div>
-            <InterviewControls
+          <div className="h-[calc(100vh-10rem)]">
+            <InterviewSession
+              targetRole={resumeData.role}
+              messages={conversationHistory.map(m => ({ ...m, timestamp: new Date() }))}
+              currentTranscript={isListening ? (transcript + ' ' + interimTranscript).trim() : undefined}
               isListening={isListening}
-              isCameraActive={isCameraActive}
-              isLoading={isLoading}
               isSpeaking={isSpeaking}
-              textInput={textInput}
+              isLoading={isLoading}
+              isCameraActive={isCameraActive}
+              stream={stream}
+              resumeContent={resumeData.content}
               onToggleMic={handleToggleMic}
               onToggleCamera={isCameraActive ? stopCamera : startCamera}
-              onEndInterview={handleEndInterview}
-              onSendText={handleSendText}
-              onTextChange={setTextInput}
+              onStartSession={handleStartSession}
+              onPauseSession={() => {}}
+              onEndSession={handleEndSession}
+              sessionStarted={sessionStarted}
             />
           </div>
         )}
