@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Check } from "lucide-react";
+import { Check, Sparkles } from "lucide-react";
 
 const PricingSection = () => {
   const plans = [
@@ -56,14 +56,19 @@ const PricingSection = () => {
   ];
 
   return (
-    <section id="pricing" className="py-20 bg-background">
-      <div className="container mx-auto px-4 lg:px-8">
+    <section id="pricing" className="py-24 bg-background relative overflow-hidden">
+      {/* Background effects */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-glow-orange opacity-20" />
+      </div>
+
+      <div className="container mx-auto px-4 lg:px-8 relative z-10">
         <div className="max-w-3xl mx-auto text-center mb-16">
-          <span className="inline-block px-4 py-1.5 rounded-full bg-accent/10 text-accent text-sm font-medium mb-4">
+          <span className="inline-block px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-4">
             Pricing
           </span>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Simple, Transparent Pricing
+          <h2 className="font-display text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-4">
+            Simple, <span className="text-gradient-primary">Transparent</span> Pricing
           </h2>
           <p className="text-lg text-muted-foreground">
             Choose the plan that fits your career goals. Upgrade or cancel anytime.
@@ -74,31 +79,32 @@ const PricingSection = () => {
           {plans.map((plan, index) => (
             <div
               key={index}
-              className={`relative rounded-2xl p-8 ${
+              className={`relative rounded-2xl p-8 transition-all duration-300 card-hover ${
                 plan.popular
-                  ? "bg-gradient-primary text-primary-foreground shadow-primary scale-105"
-                  : "bg-card border border-border"
-              } transition-all duration-300 card-hover`}
+                  ? "bg-gradient-primary text-white shadow-primary border-0 scale-105 z-10"
+                  : "bg-card border border-border hover:border-primary/30"
+              }`}
             >
               {plan.popular && (
-                <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-accent text-accent-foreground text-sm font-semibold shadow-lg">
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-secondary text-white text-sm font-semibold shadow-lg flex items-center gap-1">
+                  <Sparkles className="h-3 w-3" />
                   Most Popular
                 </span>
               )}
 
               <div className="text-center mb-6">
-                <h3 className={`font-display text-xl font-semibold mb-2 ${plan.popular ? "text-primary-foreground" : "text-foreground"}`}>
+                <h3 className={`font-display text-xl font-semibold mb-2 ${plan.popular ? "text-white" : "text-foreground"}`}>
                   {plan.name}
                 </h3>
                 <div className="flex items-baseline justify-center gap-1">
-                  <span className={`text-4xl font-bold ${plan.popular ? "text-primary-foreground" : "text-foreground"}`}>
+                  <span className={`text-4xl font-bold ${plan.popular ? "text-white" : "text-foreground"}`}>
                     {plan.price}
                   </span>
-                  <span className={`text-sm ${plan.popular ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
+                  <span className={`text-sm ${plan.popular ? "text-white/70" : "text-muted-foreground"}`}>
                     /{plan.period}
                   </span>
                 </div>
-                <p className={`text-sm mt-2 ${plan.popular ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
+                <p className={`text-sm mt-2 ${plan.popular ? "text-white/80" : "text-muted-foreground"}`}>
                   {plan.description}
                 </p>
               </div>
@@ -106,8 +112,12 @@ const PricingSection = () => {
               <ul className="space-y-3 mb-8">
                 {plan.features.map((feature, featureIndex) => (
                   <li key={featureIndex} className="flex items-start gap-3">
-                    <Check className={`h-5 w-5 flex-shrink-0 ${plan.popular ? "text-accent" : "text-success"}`} />
-                    <span className={`text-sm ${plan.popular ? "text-primary-foreground/90" : "text-muted-foreground"}`}>
+                    <div className={`h-5 w-5 rounded-full flex items-center justify-center flex-shrink-0 ${
+                      plan.popular ? 'bg-white/20' : 'bg-primary/10'
+                    }`}>
+                      <Check className={`h-3 w-3 ${plan.popular ? "text-white" : "text-primary"}`} />
+                    </div>
+                    <span className={`text-sm ${plan.popular ? "text-white/90" : "text-muted-foreground"}`}>
                       {feature}
                     </span>
                   </li>
@@ -118,7 +128,7 @@ const PricingSection = () => {
                 <Button
                   variant={plan.popular ? "secondary" : plan.variant}
                   size="lg"
-                  className="w-full"
+                  className={`w-full ${plan.popular ? 'bg-white text-primary hover:bg-white/90' : ''}`}
                 >
                   {plan.cta}
                 </Button>
