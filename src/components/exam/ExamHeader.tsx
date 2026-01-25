@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Sparkles, ArrowLeft, BookOpen } from "lucide-react";
+import { ArrowLeft, BookOpen } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 export const ExamHeader = () => {
   return (
@@ -8,12 +9,7 @@ export const ExamHeader = () => {
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <Link to="/dashboard" className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary">
-              <Sparkles className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <span className="font-display text-xl font-bold text-foreground">
-              CareerANSTA
-            </span>
+            <img src={logo} alt="CareerANSTA" className="h-10 object-contain" />
           </Link>
           <Link to="/dashboard">
             <Button variant="ghost" size="sm">
