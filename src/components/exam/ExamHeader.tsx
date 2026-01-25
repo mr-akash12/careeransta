@@ -10,6 +10,9 @@ export const ExamHeader = () => {
         <div className="flex h-16 items-center justify-between">
           <Link to="/dashboard" className="flex items-center gap-2">
             <img src={logo} alt="CareerANSTA" className="h-10 object-contain" />
+            <span className="font-display text-xl font-bold text-foreground">
+              CAREER<span className="text-primary">ANSTA</span>
+            </span>
           </Link>
           <Link to="/dashboard">
             <Button variant="ghost" size="sm">
