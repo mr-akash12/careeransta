@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Quote } from "lucide-react";
 
 interface Testimonial {
@@ -135,6 +135,8 @@ const TestimonialsSection = () => {
   const column1Ref = useRef<HTMLDivElement>(null);
   const column2Ref = useRef<HTMLDivElement>(null);
   const column3Ref = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
     const columns = [column1Ref.current, column2Ref.current, column3Ref.current];
@@ -144,28 +146,30 @@ const TestimonialsSection = () => {
     let positions = [0, 0, 0];
 
     const animate = () => {
-      columns.forEach((column, index) => {
-        if (column) {
-          positions[index] += speeds[index];
-          const maxScroll = column.scrollHeight / 2;
-          
-          // Reset position for seamless loop
-          if (speeds[index] > 0 && positions[index] >= maxScroll) {
-            positions[index] = 0;
-          } else if (speeds[index] < 0 && positions[index] <= -maxScroll) {
-            positions[index] = 0;
+      if (!isPaused) {
+        columns.forEach((column, index) => {
+          if (column) {
+            positions[index] += speeds[index];
+            const maxScroll = column.scrollHeight / 2;
+            
+            // Reset position for seamless loop
+            if (speeds[index] > 0 && positions[index] >= maxScroll) {
+              positions[index] = 0;
+            } else if (speeds[index] < 0 && positions[index] <= -maxScroll) {
+              positions[index] = 0;
+            }
+            
+            column.style.transform = `translateY(${positions[index]}px)`;
           }
-          
-          column.style.transform = `translateY(${positions[index]}px)`;
-        }
-      });
+        });
+      }
       animationId = requestAnimationFrame(animate);
     };
 
     animate();
 
     return () => cancelAnimationFrame(animationId);
-  }, []);
+  }, [isPaused]);
 
   // Split testimonials into 3 columns
   const column1 = testimonials.filter((_, i) => i % 3 === 0);
@@ -189,7 +193,12 @@ const TestimonialsSection = () => {
         </div>
 
         {/* Masonry Grid with Animation */}
-        <div className="relative h-[600px] overflow-hidden">
+        <div 
+          ref={containerRef}
+          className="relative h-[600px] overflow-hidden"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
           {/* Gradient Overlays */}
           <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none" />
           <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent z-10 pointer-events-none" />
