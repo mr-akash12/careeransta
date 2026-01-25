@@ -67,7 +67,7 @@ const RoleSelection = () => {
               <Sparkles className="h-5 w-5 text-primary-foreground" />
             </div>
             <span className="font-display text-2xl font-bold text-foreground">
-              CareerAscend
+              CareerANSTA
             </span>
           </div>
 
@@ -76,7 +76,7 @@ const RoleSelection = () => {
               Choose your role
             </h1>
             <p className="text-muted-foreground">
-              How will you be using CareerAscend?
+              How will you be using CareerANSTA?
             </p>
           </div>
 

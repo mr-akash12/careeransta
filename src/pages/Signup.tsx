@@ -97,7 +97,7 @@ const Signup = () => {
                 <Sparkles className="h-5 w-5 text-white" />
               </div>
               <span className="font-display text-2xl font-bold text-foreground">
-                Career<span className="text-gradient-primary">Ascend</span>
+                Career<span className="text-gradient-primary">ANSTA</span>
               </span>
             </div>
 
@@ -106,7 +106,7 @@ const Signup = () => {
                 Choose your role
               </h1>
               <p className="text-muted-foreground">
-                How will you be using CareerAscend?
+                How will you be using CareerANSTA?
               </p>
             </div>
 
