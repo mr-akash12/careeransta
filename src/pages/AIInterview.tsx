@@ -1,13 +1,14 @@
 import { useState, useCallback, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Brain, ArrowLeft, Sparkles } from 'lucide-react';
+import { Brain, ArrowLeft } from 'lucide-react';
 import { ResumeUpload } from '@/components/interview/ResumeUpload';
 import { SetupConfigStep } from '@/components/interview/SetupConfigStep';
 import { PermissionRequest } from '@/components/interview/PermissionRequest';
 import { InterviewSession } from '@/components/interview/InterviewSession';
 import { StepTabs } from '@/components/interview/StepTabs';
 import { FeedbackReport } from '@/components/interview/FeedbackReport';
+import logo from '@/assets/logo.png';
 import { useConversationController, type ConversationState } from '@/hooks/useConversationController';
 import { useCamera } from '@/hooks/useCamera';
 import { useAudioAnalyzer } from '@/hooks/useAudioAnalyzer';
@@ -173,11 +174,11 @@ const AIInterview = () => {
       <header className="sticky top-0 z-50 glass border-b border-border">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex h-16 items-center justify-between">
-            <Link to="/dashboard" className="flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary">
-                <Sparkles className="h-5 w-5 text-primary-foreground" />
-              </div>
-              <span className="font-display text-xl font-bold text-foreground">CareerANSTA</span>
+            <Link to="/dashboard" className="flex items-center gap-2 group">
+              <img src={logo} alt="CareerANSTA" className="h-10 object-contain" />
+              <span className="font-display text-2xl font-extrabold tracking-wide flex items-center">
+                <span className="text-white">Career</span><span className="text-[#ff9f1c]">ANSTA</span>
+              </span>
             </Link>
             <Link to="/dashboard">
               <Button variant="ghost" size="sm">
