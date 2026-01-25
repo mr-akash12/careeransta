@@ -263,7 +263,12 @@ export const InterviewSession = ({
             {/* AI Interviewer */}
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground text-center">AI Interviewer</p>
-              <div className="relative bg-muted/50 rounded-xl overflow-hidden aspect-video border border-border">
+              <div className={cn(
+                "relative bg-muted/50 rounded-xl overflow-hidden aspect-video border-2 transition-all duration-300",
+                isSpeaking 
+                  ? "border-accent shadow-[0_0_20px_rgba(34,197,94,0.4)] animate-pulse" 
+                  : "border-border"
+              )}>
                 <img 
                   src={aiInterviewerImg} 
                   alt="AI Interviewer" 
@@ -273,6 +278,13 @@ export const InterviewSession = ({
                 {isSpeaking && (
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-3">
                     <AudioWaveform isActive={isSpeaking} />
+                  </div>
+                )}
+                {/* Speaking indicator badge */}
+                {isSpeaking && (
+                  <div className="absolute top-2 left-2 flex items-center gap-1.5 px-2 py-1 rounded-full bg-accent text-accent-foreground text-xs font-medium">
+                    <Circle className="h-2 w-2 fill-current animate-pulse" />
+                    Speaking
                   </div>
                 )}
               </div>
