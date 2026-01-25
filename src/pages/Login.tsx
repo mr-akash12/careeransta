@@ -44,18 +44,11 @@ const Login = () => {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    setIsLoading(true);
-    const { error } = await signInWithGoogle();
-    
-    if (error) {
-      toast({
-        title: "Google login failed",
-        description: error.message,
-        variant: "destructive",
-      });
-      setIsLoading(false);
-    }
+  const handleGoogleLogin = () => {
+    toast({
+      title: "Coming Soon!",
+      description: "Google login will be available soon. Please use your email and password to sign in.",
+    });
   };
 
   return (

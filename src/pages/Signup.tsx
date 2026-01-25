@@ -64,18 +64,11 @@ const Signup = () => {
     }
   };
 
-  const handleGoogleSignup = async () => {
-    setIsLoading(true);
-    const { error } = await signInWithGoogle();
-    
-    if (error) {
-      toast({
-        title: "Google signup failed",
-        description: error.message,
-        variant: "destructive",
-      });
-      setIsLoading(false);
-    }
+  const handleGoogleSignup = () => {
+    toast({
+      title: "Coming Soon!",
+      description: "Google signup will be available soon. Please use your email and password to create an account.",
+    });
   };
 
   if (step === "role") {
