@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Target, Eye, Sparkles } from "lucide-react";
@@ -6,6 +7,10 @@ import Footer from "@/components/landing/Footer";
 import founderImage from "@/assets/founder-akash.png";
 
 const About = () => {
+  // Scroll to top on page load
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
