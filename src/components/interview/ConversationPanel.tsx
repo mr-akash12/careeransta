@@ -25,9 +25,9 @@ export const ConversationPanel = ({ messages, currentTranscript, isAISpeaking }:
     }
   }, [messages, currentTranscript, showFullTranscript]);
 
-  // Show only the last 4 messages or all if expanded
-  const displayMessages = showFullTranscript ? messages : messages.slice(-4);
-  const hiddenCount = messages.length - 4;
+  // Show only the last 5 messages or all if expanded
+  const displayMessages = showFullTranscript ? messages : messages.slice(-5);
+  const hiddenCount = messages.length - 5;
 
   return (
     <ScrollArea className="h-full" ref={scrollRef}>

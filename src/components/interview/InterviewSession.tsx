@@ -346,8 +346,8 @@ export const InterviewSession = ({
             )}
           </div>
 
-          {/* Transcription Panel */}
-          <Card className="flex-1 min-h-0 flex flex-col">
+          {/* Transcription Panel - Expanded */}
+          <Card className="flex-1 min-h-[320px] flex flex-col">
             <CardHeader className="py-3 px-4 flex flex-row items-center justify-between border-b">
               <div className="flex items-center gap-2">
                 <div className={cn(
@@ -367,7 +367,7 @@ export const InterviewSession = ({
                 <Timer startTime={sessionTime} isRunning={sessionStarted} />
               </div>
             </CardHeader>
-            <CardContent className="flex-1 p-0 min-h-0">
+            <CardContent className="flex-1 p-0 min-h-0 overflow-hidden">
               <ScrollArea className="h-full p-4">
                 {messages.length === 0 && !currentTranscript ? (
                   <p className="text-center text-muted-foreground py-8">
