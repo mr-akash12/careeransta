@@ -30,8 +30,8 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
             <img src={logo} alt="CareerANSTA" className="h-10 object-contain" />
-            <span className="font-display text-xl font-bold tracking-wide">
-              <span className="text-foreground">CAREER</span><span className="text-accent">ANSTA</span>
+            <span className="font-display text-2xl font-extrabold tracking-wide flex items-center">
+              <span className="text-white">Career</span><span className="text-[#ff9f1c]">ANSTA</span>
             </span>
           </Link>
 
