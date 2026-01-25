@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Mic, Video, Clock, Circle, User, Bot } from 'lucide-react';
+import { Mic, MicOff, Video, VideoOff, Clock, Circle, User, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
+import type { ConversationState } from '@/hooks/useConversationController';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -23,7 +24,10 @@ interface InterviewSessionProps {
   isCameraActive: boolean;
   stream: MediaStream | null;
   resumeContent?: string;
+  conversationState: ConversationState;
+  statusText: string;
   onToggleMic: () => void;
+  onForceSend: () => void;
   onToggleCamera: () => void;
   onStartSession: () => void;
   onPauseSession: () => void;
@@ -31,22 +35,36 @@ interface InterviewSessionProps {
   sessionStarted: boolean;
 }
 
-// Audio waveform visualization
+// Audio waveform visualization with animation
 const AudioWaveform = ({ isActive }: { isActive: boolean }) => {
   const bars = 40;
+  const [heights, setHeights] = useState<number[]>(Array(bars).fill(10));
+
+  useEffect(() => {
+    if (!isActive) {
+      setHeights(Array(bars).fill(10));
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setHeights(Array(bars).fill(0).map(() => 
+        Math.random() * 80 + 20
+      ));
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [isActive, bars]);
+
   return (
     <div className="flex items-center justify-center gap-[2px] h-16">
-      {Array.from({ length: bars }).map((_, i) => (
+      {heights.map((height, i) => (
         <div
           key={i}
           className={cn(
-            'w-1 rounded-full transition-all duration-150',
+            'w-1 rounded-full transition-all duration-100',
             isActive ? 'bg-accent' : 'bg-muted-foreground/20'
           )}
-          style={{
-            height: isActive ? `${Math.random() * 100}%` : '10%',
-            animationDelay: `${i * 50}ms`,
-          }}
+          style={{ height: `${height}%` }}
         />
       ))}
     </div>
@@ -117,6 +135,26 @@ const Timer = ({ startTime, isRunning }: { startTime: Date | null; isRunning: bo
   );
 };
 
+// Status indicator component
+const StatusIndicator = ({ state, statusText }: { state: ConversationState; statusText: string }) => {
+  const getStatusColor = () => {
+    switch (state) {
+      case 'ai_speaking': return 'bg-accent';
+      case 'user_listening': return 'bg-success animate-pulse';
+      case 'user_processing': return 'bg-warning animate-pulse';
+      case 'ai_responding': return 'bg-primary animate-pulse';
+      default: return 'bg-muted-foreground';
+    }
+  };
+
+  return (
+    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/50">
+      <div className={cn('h-2 w-2 rounded-full', getStatusColor())} />
+      <span className="text-xs font-medium text-muted-foreground">{statusText}</span>
+    </div>
+  );
+};
+
 export const InterviewSession = ({
   targetRole,
   company,
@@ -128,7 +166,10 @@ export const InterviewSession = ({
   isCameraActive,
   stream,
   resumeContent,
+  conversationState,
+  statusText,
   onToggleMic,
+  onForceSend,
   onToggleCamera,
   onStartSession,
   onPauseSession,
@@ -152,6 +193,9 @@ export const InterviewSession = ({
     .slice(0, 6)
     .map(line => line.trim().substring(0, 100)) || [];
 
+  const canToggleMic = sessionStarted && conversationState !== 'ai_responding' && conversationState !== 'user_processing';
+  const showSendButton = isListening && currentTranscript && currentTranscript.length > 0;
+
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
@@ -165,15 +209,18 @@ export const InterviewSession = ({
         </div>
         <div className="flex items-center gap-4">
           {sessionStarted && (
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">AI Talking Points</span>
-              <Switch checked={showTalkingPoints} onCheckedChange={setShowTalkingPoints} />
-            </div>
+            <>
+              <StatusIndicator state={conversationState} statusText={statusText} />
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">AI Talking Points</span>
+                <Switch checked={showTalkingPoints} onCheckedChange={setShowTalkingPoints} />
+              </div>
+            </>
           )}
           <Timer startTime={sessionTime} isRunning={sessionStarted} />
           {!sessionStarted ? (
-            <Button variant="hero" onClick={onStartSession}>
-              Start Session
+            <Button variant="hero" onClick={onStartSession} disabled={isLoading}>
+              {isLoading ? 'Starting...' : 'Start Session'}
             </Button>
           ) : (
             <div className="flex gap-2">
@@ -214,39 +261,74 @@ export const InterviewSession = ({
           </div>
 
           {/* Controls */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <Button
               variant={isListening ? 'default' : 'outline'}
               size="icon"
               className={cn(
-                'h-12 w-12 rounded-full',
-                isListening && 'bg-success hover:bg-success/90'
+                'h-12 w-12 rounded-full transition-all',
+                isListening && 'bg-success hover:bg-success/90 ring-4 ring-success/20'
               )}
               onClick={onToggleMic}
+              disabled={!canToggleMic}
             >
-              <Mic className={cn('h-5 w-5', isListening && 'animate-pulse')} />
+              {isListening ? (
+                <Mic className="h-5 w-5 animate-pulse" />
+              ) : (
+                <MicOff className="h-5 w-5" />
+              )}
             </Button>
+            
+            {showSendButton && (
+              <Button
+                variant="default"
+                size="icon"
+                className="h-12 w-12 rounded-full bg-primary"
+                onClick={onForceSend}
+              >
+                <Send className="h-5 w-5" />
+              </Button>
+            )}
+            
             <Button
               variant={isCameraActive ? 'outline' : 'ghost'}
               size="icon"
               className="h-12 w-12 rounded-full"
               onClick={onToggleCamera}
             >
-              <Video className="h-5 w-5" />
+              {isCameraActive ? (
+                <Video className="h-5 w-5" />
+              ) : (
+                <VideoOff className="h-5 w-5" />
+              )}
             </Button>
+
+            {isListening && currentTranscript && (
+              <div className="flex-1 px-3 py-2 bg-muted/50 rounded-lg border border-border">
+                <p className="text-sm text-muted-foreground italic truncate">
+                  "{currentTranscript}..."
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Transcription Panel */}
           <Card className="flex-1 min-h-0 flex flex-col">
             <CardHeader className="py-3 px-4 flex flex-row items-center justify-between border-b">
               <div className="flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-success animate-pulse" />
+                <div className={cn(
+                  'h-2 w-2 rounded-full',
+                  sessionStarted ? 'bg-success animate-pulse' : 'bg-muted-foreground'
+                )} />
                 <CardTitle className="text-sm font-medium">Transcription of Your Interview</CardTitle>
               </div>
               <div className="flex items-center gap-3 text-sm text-muted-foreground">
                 <span className="flex items-center gap-1.5">
-                  <div className="h-2 w-2 rounded-full bg-success" />
-                  Live
+                  <div className={cn(
+                    'h-2 w-2 rounded-full',
+                    sessionStarted ? 'bg-success' : 'bg-muted-foreground'
+                  )} />
+                  {sessionStarted ? 'Live' : 'Waiting'}
                 </span>
                 <Timer startTime={sessionTime} isRunning={sessionStarted} />
               </div>
@@ -255,7 +337,9 @@ export const InterviewSession = ({
               <ScrollArea className="h-full p-4">
                 {messages.length === 0 && !currentTranscript ? (
                   <p className="text-center text-muted-foreground py-8">
-                    Transcripts will appear here during the interview...
+                    {sessionStarted 
+                      ? 'Waiting for the interview to begin...' 
+                      : 'Transcripts will appear here during the interview...'}
                   </p>
                 ) : (
                   <div className="space-y-4">
@@ -278,7 +362,10 @@ export const InterviewSession = ({
                           'flex-1 max-w-[80%]',
                           msg.role === 'user' && 'text-right'
                         )}>
-                          <div className="flex items-center gap-2 mb-1">
+                          <div className={cn(
+                            'flex items-center gap-2 mb-1',
+                            msg.role === 'user' && 'justify-end'
+                          )}>
                             <span className="text-xs text-muted-foreground">
                               {msg.role === 'assistant' ? 'AI Interviewer' : 'You'}
                             </span>
@@ -299,12 +386,20 @@ export const InterviewSession = ({
                     ))}
                     {currentTranscript && (
                       <div className="flex gap-3 flex-row-reverse">
-                        <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                          <User className="h-4 w-4 text-primary" />
+                        <div className="h-8 w-8 rounded-full bg-success/20 flex items-center justify-center shrink-0 ring-2 ring-success">
+                          <User className="h-4 w-4 text-success" />
                         </div>
                         <div className="flex-1 max-w-[80%] text-right">
-                          <div className="inline-block p-3 rounded-xl text-sm bg-accent/30 text-foreground italic">
-                            {currentTranscript}...
+                          <div className="flex items-center gap-2 mb-1 justify-end">
+                            <span className="text-xs text-success font-medium">Speaking now...</span>
+                          </div>
+                          <div className="inline-block p-3 rounded-xl text-sm bg-success/10 text-foreground border border-success/30">
+                            {currentTranscript}
+                            <span className="inline-flex gap-0.5 ml-1">
+                              <span className="w-1 h-1 bg-success rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                              <span className="w-1 h-1 bg-success rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                              <span className="w-1 h-1 bg-success rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                            </span>
                           </div>
                         </div>
                       </div>
