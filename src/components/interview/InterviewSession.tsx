@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Mic, MicOff, Video, VideoOff, Clock, Circle, User, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -84,12 +84,25 @@ const CameraView = ({
   isActive: boolean;
   isRecording: boolean;
 }) => {
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+
+  React.useEffect(() => {
+    if (videoRef.current) {
+      if (stream) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.play().catch(err => console.log('Video play error:', err));
+      } else {
+        videoRef.current.srcObject = null;
+      }
+    }
+  }, [stream]);
+
   return (
     <div className="relative bg-muted rounded-xl overflow-hidden aspect-video">
       {isActive && stream ? (
         <>
           <video
-            ref={(el) => { if (el && stream) el.srcObject = stream; }}
+            ref={videoRef}
             autoPlay
             playsInline
             muted
