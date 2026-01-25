@@ -1,6 +1,7 @@
-import { useRef, useEffect } from 'react';
-import { Bot, User } from 'lucide-react';
+import { useRef, useEffect, useState } from 'react';
+import { Bot, User, ChevronDown, ChevronUp } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 interface Message {
@@ -16,27 +17,46 @@ interface ConversationPanelProps {
 
 export const ConversationPanel = ({ messages, currentTranscript, isAISpeaking }: ConversationPanelProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [showFullTranscript, setShowFullTranscript] = useState(false);
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages, currentTranscript]);
+  }, [messages, currentTranscript, showFullTranscript]);
 
-  // Show only the last 4 messages
-  const recentMessages = messages.slice(-4);
+  // Show only the last 4 messages or all if expanded
+  const displayMessages = showFullTranscript ? messages : messages.slice(-4);
+  const hiddenCount = messages.length - 4;
 
   return (
     <ScrollArea className="h-full" ref={scrollRef}>
       <div className="p-4 space-y-4">
-        {/* Show indicator if there are older messages */}
-        {messages.length > 4 && (
-          <div className="text-center text-xs text-muted-foreground py-2">
-            {messages.length - 4} earlier message{messages.length - 4 > 1 ? 's' : ''} hidden
+        {/* Show expand/collapse button if there are more than 4 messages */}
+        {hiddenCount > 0 && (
+          <div className="text-center py-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowFullTranscript(!showFullTranscript)}
+              className="text-xs text-muted-foreground hover:text-foreground gap-1"
+            >
+              {showFullTranscript ? (
+                <>
+                  <ChevronUp className="h-3 w-3" />
+                  Show less
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="h-3 w-3" />
+                  Show {hiddenCount} earlier message{hiddenCount > 1 ? 's' : ''}
+                </>
+              )}
+            </Button>
           </div>
         )}
         
-        {recentMessages.map((message, index) => (
+        {displayMessages.map((message, index) => (
           <div
             key={index}
             className={cn(
