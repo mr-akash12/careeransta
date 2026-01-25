@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
+import { VUMeter } from './VUMeter';
 import type { ConversationState } from '@/hooks/useConversationController';
 
 interface Message {
@@ -26,6 +27,8 @@ interface InterviewSessionProps {
   resumeContent?: string;
   conversationState: ConversationState;
   statusText: string;
+  micVolume: number;
+  micFrequencyData: number[];
   onToggleMic: () => void;
   onForceSend: () => void;
   onToggleCamera: () => void;
@@ -168,6 +171,8 @@ export const InterviewSession = ({
   resumeContent,
   conversationState,
   statusText,
+  micVolume,
+  micFrequencyData,
   onToggleMic,
   onForceSend,
   onToggleCamera,
@@ -278,6 +283,22 @@ export const InterviewSession = ({
                 <MicOff className="h-5 w-5" />
               )}
             </Button>
+            
+            {/* VU Meter - shows when listening */}
+            {isListening && (
+              <div className="flex items-center gap-2 px-3 py-2 bg-muted/50 rounded-lg border border-success/30 min-w-[180px]">
+                <VUMeter 
+                  volume={micVolume} 
+                  frequencyData={micFrequencyData} 
+                  isActive={isListening}
+                  variant="bars"
+                  size="sm"
+                />
+                <div className="text-xs text-success font-medium whitespace-nowrap">
+                  {micVolume > 0.1 ? 'Hearing you...' : 'Speak now'}
+                </div>
+              </div>
+            )}
             
             {showSendButton && (
               <Button
