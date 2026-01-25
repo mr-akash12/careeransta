@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { 
   Users, 
   ArrowLeft,
@@ -9,7 +10,8 @@ import {
   Clock,
   IndianRupee,
   SlidersHorizontal,
-  X
+  X,
+  Search
 } from "lucide-react";
 import {
   Select,
@@ -18,7 +20,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
 import BookingDialog from "@/components/live-sessions/BookingDialog";
 
 interface Professional {
@@ -139,6 +140,7 @@ const LiveSessions = () => {
   const [selectedPriceRange, setSelectedPriceRange] = useState(priceRanges[0]);
   const [selectedRating, setSelectedRating] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleBookNow = (professional: Professional) => {
     setSelectedProfessional(professional);
@@ -149,12 +151,24 @@ const LiveSessions = () => {
     setSelectedRole("All Roles");
     setSelectedPriceRange(priceRanges[0]);
     setSelectedRating(0);
+    setSearchQuery("");
   };
 
-  const hasActiveFilters = selectedRole !== "All Roles" || selectedPriceRange.label !== "All Prices" || selectedRating > 0;
+  const hasActiveFilters = selectedRole !== "All Roles" || selectedPriceRange.label !== "All Prices" || selectedRating > 0 || searchQuery.trim() !== "";
 
   const filteredProfessionals = useMemo(() => {
     return professionals.filter((pro) => {
+      // Search filter
+      if (searchQuery.trim()) {
+        const query = searchQuery.toLowerCase();
+        const matchesName = pro.name.toLowerCase().includes(query);
+        const matchesSkills = pro.skills.some(skill => skill.toLowerCase().includes(query));
+        const matchesRole = pro.role.toLowerCase().includes(query);
+        const matchesCompany = pro.company.toLowerCase().includes(query);
+        if (!matchesName && !matchesSkills && !matchesRole && !matchesCompany) {
+          return false;
+        }
+      }
       // Role filter
       if (selectedRole !== "All Roles" && pro.role !== selectedRole) {
         return false;
@@ -169,7 +183,7 @@ const LiveSessions = () => {
       }
       return true;
     });
-  }, [selectedRole, selectedPriceRange, selectedRating]);
+  }, [selectedRole, selectedPriceRange, selectedRating, searchQuery]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -207,6 +221,28 @@ const LiveSessions = () => {
           <p className="text-muted-foreground">
             Connect with industry professionals for 1-on-1 mock interviews and career guidance
           </p>
+        </div>
+
+        {/* Search Bar */}
+        <div className="max-w-5xl mx-auto mb-4">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Input
+              type="text"
+              placeholder="Search by name, skills, role, or company..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-12 pr-10 h-12 bg-card border-border rounded-xl text-base"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Filters Section */}
@@ -318,6 +354,11 @@ const LiveSessions = () => {
                 <div className="mt-4 pt-4 border-t border-border">
                   <div className="flex flex-wrap gap-2 items-center">
                     <span className="text-sm text-muted-foreground">Active filters:</span>
+                    {searchQuery.trim() && (
+                      <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+                        "{searchQuery}"
+                      </span>
+                    )}
                     {selectedRole !== "All Roles" && (
                       <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
                         {selectedRole}
