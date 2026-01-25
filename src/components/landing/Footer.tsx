@@ -11,7 +11,7 @@ const Footer = () => {
       { label: "Pricing", href: "#pricing" },
     ],
     company: [
-      { label: "About Us", href: "#" },
+      { label: "About Us", href: "/about" },
       { label: "Careers", href: "#" },
       { label: "Blog", href: "#" },
       { label: "Contact", href: "#" },
@@ -97,12 +97,21 @@ const Footer = () => {
             <ul className="space-y-3">
               {links.company.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {link.label}
-                  </a>
+                  {link.href.startsWith("/") ? (
+                    <Link
+                      to={link.href}
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {link.label}
+                    </Link>
+                  ) : (
+                    <a
+                      href={link.href}
+                      className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
