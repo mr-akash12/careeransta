@@ -20,6 +20,8 @@ const buttonVariants = cva(
         accent: "bg-gradient-accent text-white shadow-lg hover:shadow-accent hover:-translate-y-0.5 transition-all duration-300",
         success: "bg-gradient-success text-white hover:opacity-90",
         premium: "bg-gradient-primary text-white shadow-primary hover:shadow-xl hover:-translate-y-1 transition-all duration-300 animate-glow",
+        orange: "bg-gradient-orange text-white shadow-lg hover:shadow-[0_8px_30px_-4px_hsl(28_100%_50%_/_0.35)] hover:-translate-y-0.5 transition-all duration-300",
+        yellow: "bg-gradient-yellow text-gray-900 shadow-lg hover:shadow-[0_8px_30px_-4px_hsl(45_100%_50%_/_0.35)] hover:-translate-y-0.5 transition-all duration-300",
       },
       size: {
         default: "h-10 px-5 py-2",
