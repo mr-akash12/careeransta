@@ -1,6 +1,6 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
 import { 
   Users, 
   ArrowLeft,
@@ -9,7 +9,23 @@ import {
   Clock,
   IndianRupee
 } from "lucide-react";
-const professionals = [
+import BookingDialog from "@/components/live-sessions/BookingDialog";
+
+interface Professional {
+  id: number;
+  name: string;
+  role: string;
+  company: string;
+  experience: string;
+  rating: number;
+  reviews: number;
+  price: number;
+  skills: string[];
+  avatar: string;
+  available: boolean;
+}
+
+const professionals: Professional[] = [
   {
     id: 1,
     name: "Priya Sharma",
@@ -47,18 +63,17 @@ const professionals = [
     price: 800,
     skills: ["Product Strategy", "Agile", "Leadership"],
     avatar: "AG",
-    available: false,
+    available: true,
   },
 ];
 
 const LiveSessions = () => {
-  const { toast } = useToast();
+  const [selectedProfessional, setSelectedProfessional] = useState<Professional | null>(null);
+  const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
 
-  const handleBookNow = () => {
-    toast({
-      title: "Coming Soon!",
-      description: "Live session booking will be available soon. Stay tuned!",
-    });
+  const handleBookNow = (professional: Professional) => {
+    setSelectedProfessional(professional);
+    setBookingDialogOpen(true);
   };
 
   return (
@@ -170,7 +185,7 @@ const LiveSessions = () => {
                 <Button 
                   variant="default" 
                   size="sm" 
-                  onClick={handleBookNow}
+                  onClick={() => handleBookNow(pro)}
                 >
                   Book Now
                 </Button>
@@ -183,6 +198,13 @@ const LiveSessions = () => {
           Payment integration coming soon. Booking will be enabled after Razorpay setup.
         </p>
       </main>
+
+      {/* Booking Dialog */}
+      <BookingDialog
+        professional={selectedProfessional}
+        open={bookingDialogOpen}
+        onOpenChange={setBookingDialogOpen}
+      />
     </div>
   );
 };
