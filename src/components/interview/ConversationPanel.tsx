@@ -23,16 +23,16 @@ export const ConversationPanel = ({ messages, currentTranscript, isAISpeaking }:
     }
   }, [messages, currentTranscript]);
 
-  // Show only the last 6 messages
-  const recentMessages = messages.slice(-6);
+  // Show only the last 4 messages
+  const recentMessages = messages.slice(-4);
 
   return (
     <ScrollArea className="h-full" ref={scrollRef}>
       <div className="p-4 space-y-4">
         {/* Show indicator if there are older messages */}
-        {messages.length > 6 && (
+        {messages.length > 4 && (
           <div className="text-center text-xs text-muted-foreground py-2">
-            {messages.length - 6} earlier message{messages.length - 6 > 1 ? 's' : ''} hidden
+            {messages.length - 4} earlier message{messages.length - 4 > 1 ? 's' : ''} hidden
           </div>
         )}
         
