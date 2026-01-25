@@ -22,7 +22,7 @@ const Navbar = () => {
               <Sparkles className="h-5 w-5 text-white" />
             </div>
             <span className="font-display text-xl font-bold text-foreground">
-              Career<span className="text-gradient-primary">Ascend</span>
+              Career<span className="text-gradient-primary">ANSTA</span>
             </span>
           </Link>
 

@@ -49,7 +49,7 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
                 <Mail className="h-4 w-4 text-primary" />
-                <span className="text-sm">support@careerascend.com</span>
+                <span className="text-sm">support@careeransta.com</span>
               </div>
               <div className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
                 <Phone className="h-4 w-4 text-primary" />
@@ -129,7 +129,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
-            © 2024 CareerAscend. All rights reserved.
+            © 2024 CareerANSTA. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
             <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
