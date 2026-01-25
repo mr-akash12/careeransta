@@ -7,17 +7,18 @@ import {
   BookOpen, 
   ArrowRight,
   LogOut,
-  Settings,
-  Bell,
   TrendingUp,
   Clock,
   Target,
   Calendar,
   IndianRupee,
-  Star
+  Star,
+  Settings as SettingsIcon
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import logo from "@/assets/logo.png";
+import NotificationsDropdown from "@/components/dashboard/NotificationsDropdown";
+import SettingsDropdown from "@/components/dashboard/SettingsDropdown";
 
 const Dashboard = () => {
   const { user, role, isLoading, signOut } = useAuth();
@@ -113,18 +114,12 @@ const StudentDashboard = ({ user, onSignOut }: DashboardProps) => {
             </Link>
 
             <div className="flex items-center gap-3">
-              <Button variant="ghost" size="icon" className="relative">
-                <Bell className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-gradient-primary text-[10px] font-bold text-white flex items-center justify-center">
-                  3
-                </span>
-              </Button>
-              <Button variant="ghost" size="icon">
-                <Settings className="h-5 w-5" />
-              </Button>
-              <Button variant="ghost" size="icon" onClick={onSignOut}>
-                <LogOut className="h-5 w-5" />
-              </Button>
+              <NotificationsDropdown />
+              <SettingsDropdown 
+                onSignOut={onSignOut} 
+                userEmail={user?.email}
+                userName={user?.user_metadata?.full_name}
+              />
             </div>
           </div>
         </div>
@@ -294,18 +289,12 @@ const ProfessionalDashboard = ({ user, onSignOut }: DashboardProps) => {
               <span className="hidden md:inline-flex text-xs font-medium text-accent bg-accent/10 px-3 py-1 rounded-full border border-accent/20">
                 Professional
               </span>
-              <Button variant="ghost" size="icon" className="relative">
-                <Bell className="h-5 w-5" />
-                <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-gradient-accent text-[10px] font-bold text-white flex items-center justify-center">
-                  2
-                </span>
-              </Button>
-              <Button variant="ghost" size="icon">
-                <Settings className="h-5 w-5" />
-              </Button>
-              <Button variant="ghost" size="icon" onClick={onSignOut}>
-                <LogOut className="h-5 w-5" />
-              </Button>
+              <NotificationsDropdown />
+              <SettingsDropdown 
+                onSignOut={onSignOut} 
+                userEmail={user?.email}
+                userName={user?.user_metadata?.full_name}
+              />
             </div>
           </div>
         </div>
@@ -352,7 +341,7 @@ const ProfessionalDashboard = ({ user, onSignOut }: DashboardProps) => {
           <div className="bg-card border border-border rounded-2xl p-6">
             <div className="flex items-start gap-4 mb-4">
               <div className="h-14 w-14 rounded-2xl bg-gradient-accent flex items-center justify-center shadow-lg">
-                <Settings className="h-7 w-7 text-white" />
+                <SettingsIcon className="h-7 w-7 text-white" />
               </div>
               <div>
                 <h3 className="font-display text-xl font-semibold text-foreground mb-1">
