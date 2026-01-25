@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Target, Eye, Sparkles } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
+import founderImage from "@/assets/founder-akash.png";
 
 const About = () => {
   return (
@@ -95,9 +96,11 @@ const About = () => {
                   <div className="relative mx-auto mb-6 w-32 h-32">
                     <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#ff9f1c] to-[#ffca3a] opacity-20 blur-xl group-hover:opacity-40 transition-opacity duration-300" />
                     <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-[#ff9f1c] to-[#ffca3a] p-[3px]">
-                      <div className="w-full h-full rounded-full bg-card flex items-center justify-center overflow-hidden">
-                        <span className="font-display text-4xl font-bold text-[#ff9f1c]">AK</span>
-                      </div>
+                      <img 
+                        src={founderImage} 
+                        alt="Akash Kumar Nayak" 
+                        className="w-full h-full rounded-full object-cover"
+                      />
                     </div>
                   </div>
 
