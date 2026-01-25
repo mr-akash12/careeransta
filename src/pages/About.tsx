@@ -109,7 +109,7 @@ const About = () => {
                     Akash Kumar Nayak
                   </h3>
                   <p className="text-[#ff9f1c] font-semibold text-sm mb-4">
-                    Co-Founder & CEO
+                    Founder & CEO
                   </p>
 
                   {/* Description */}
