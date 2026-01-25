@@ -24,8 +24,8 @@
     --popover: 160 22% 10%;
     --popover-foreground: 160 10% 92%;
 
-    /* Brand Colors - Orange Gradient */
-    --primary: 28 100% 55%;
+    /* Brand Colors - Vibrant Green Gradient */
+    --primary: 145 80% 42%;
     --primary-foreground: 0 0% 100%;
 
     /* Secondary - Soft Purple */
@@ -36,8 +36,8 @@
     --muted: 160 20% 12%;
     --muted-foreground: 160 8% 58%;
 
-    /* Accent - Amber */
-    --accent: 38 92% 50%;
+    /* Accent - Bright Green */
+    --accent: 155 75% 45%;
     --accent-foreground: 0 0% 100%;
 
     /* Feature Colors */
@@ -56,17 +56,17 @@
     /* UI Elements - Subtle green-tinted borders */
     --border: 160 18% 16%;
     --input: 160 18% 12%;
-    --ring: 28 100% 55%;
+    --ring: 145 80% 42%;
 
     --radius: 0.875rem;
 
     /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(28 100% 55%) 0%, hsl(38 92% 60%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(145 80% 38%) 0%, hsl(155 75% 45%) 100%);
     --gradient-accent: linear-gradient(135deg, hsl(262 83% 58%) 0%, hsl(280 70% 50%) 100%);
     --gradient-hero: linear-gradient(180deg, hsl(160 25% 5%) 0%, hsl(160 22% 7%) 50%, hsl(160 20% 9%) 100%);
     --gradient-card: linear-gradient(145deg, hsl(160 22% 12%) 0%, hsl(160 22% 10%) 100%);
-    --gradient-success: linear-gradient(135deg, hsl(142 72% 40%) 0%, hsl(160 65% 45%) 100%);
-    --gradient-glow-orange: radial-gradient(ellipse at center, hsl(28 100% 55% / 0.15) 0%, transparent 70%);
+    --gradient-success: linear-gradient(135deg, hsl(145 80% 38%) 0%, hsl(155 75% 45%) 100%);
+    --gradient-glow-orange: radial-gradient(ellipse at center, hsl(145 80% 42% / 0.15) 0%, transparent 70%);
     --gradient-glow-purple: radial-gradient(ellipse at center, hsl(262 83% 58% / 0.15) 0%, transparent 70%);
 
     /* Shadows - Dark mode optimized */
@@ -74,23 +74,23 @@
     --shadow-md: 0 4px 12px -2px hsl(0 0% 0% / 0.4);
     --shadow-lg: 0 10px 25px -5px hsl(0 0% 0% / 0.5);
     --shadow-xl: 0 20px 40px -10px hsl(0 0% 0% / 0.6);
-    --shadow-primary: 0 8px 30px -4px hsl(28 100% 55% / 0.35);
+    --shadow-primary: 0 8px 30px -4px hsl(145 80% 42% / 0.35);
     --shadow-accent: 0 8px 30px -4px hsl(262 83% 58% / 0.35);
-    --shadow-glow-orange: 0 0 40px 0 hsl(28 100% 55% / 0.2);
+    --shadow-glow-orange: 0 0 40px 0 hsl(145 80% 42% / 0.2);
     --shadow-glow-purple: 0 0 40px 0 hsl(262 83% 58% / 0.2);
 
     /* Sidebar */
     --sidebar-background: 160 25% 5%;
     --sidebar-foreground: 160 10% 85%;
-    --sidebar-primary: 28 100% 55%;
+    --sidebar-primary: 145 80% 42%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 160 20% 12%;
     --sidebar-accent-foreground: 160 10% 92%;
     --sidebar-border: 160 18% 16%;
-    --sidebar-ring: 28 100% 55%;
+    --sidebar-ring: 145 80% 42%;
 
     /* Timer Colors */
-    --timer-normal: 28 100% 55%;
+    --timer-normal: 145 80% 42%;
     --timer-warning: 38 92% 50%;
     --timer-critical: 0 72% 55%;
   }
@@ -311,10 +311,10 @@
 
   @keyframes glow {
     from {
-      box-shadow: 0 0 20px hsl(28 100% 55% / 0.2);
+      box-shadow: 0 0 20px hsl(145 80% 42% / 0.2);
     }
     to {
-      box-shadow: 0 0 40px hsl(28 100% 55% / 0.4);
+      box-shadow: 0 0 40px hsl(145 80% 42% / 0.4);
     }
   }
 }
