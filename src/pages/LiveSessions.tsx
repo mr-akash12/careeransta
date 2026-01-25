@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +11,8 @@ import {
   IndianRupee,
   SlidersHorizontal,
   X,
-  Search
+  Search,
+  Loader2
 } from "lucide-react";
 import {
   Select,
@@ -20,10 +21,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import BookingDialog from "@/components/live-sessions/BookingDialog";
 
 interface Professional {
-  id: number;
+  id: string;
   name: string;
   role: string;
   company: string;
@@ -35,87 +38,6 @@ interface Professional {
   avatar: string;
   available: boolean;
 }
-
-const professionals: Professional[] = [
-  {
-    id: 1,
-    name: "Priya Sharma",
-    role: "Senior Software Engineer",
-    company: "Google",
-    experience: "8 years",
-    rating: 4.9,
-    reviews: 124,
-    price: 500,
-    skills: ["System Design", "DSA", "React"],
-    avatar: "PS",
-    available: true,
-  },
-  {
-    id: 2,
-    name: "Rahul Mehta",
-    role: "Data Scientist",
-    company: "Amazon",
-    experience: "6 years",
-    rating: 4.8,
-    reviews: 89,
-    price: 600,
-    skills: ["ML", "Python", "Statistics"],
-    avatar: "RM",
-    available: true,
-  },
-  {
-    id: 3,
-    name: "Anjali Gupta",
-    role: "Product Manager",
-    company: "Microsoft",
-    experience: "10 years",
-    rating: 4.9,
-    reviews: 156,
-    price: 800,
-    skills: ["Product Strategy", "Agile", "Leadership"],
-    avatar: "AG",
-    available: true,
-  },
-  {
-    id: 4,
-    name: "Vikram Singh",
-    role: "Senior Software Engineer",
-    company: "Meta",
-    experience: "7 years",
-    rating: 4.7,
-    reviews: 98,
-    price: 550,
-    skills: ["Backend", "System Design", "Java"],
-    avatar: "VS",
-    available: true,
-  },
-  {
-    id: 5,
-    name: "Sneha Patel",
-    role: "Data Scientist",
-    company: "Netflix",
-    experience: "5 years",
-    rating: 4.6,
-    reviews: 67,
-    price: 450,
-    skills: ["Deep Learning", "NLP", "Python"],
-    avatar: "SP",
-    available: true,
-  },
-  {
-    id: 6,
-    name: "Arjun Reddy",
-    role: "Product Manager",
-    company: "Uber",
-    experience: "8 years",
-    rating: 4.8,
-    reviews: 112,
-    price: 700,
-    skills: ["Growth", "Analytics", "Strategy"],
-    avatar: "AR",
-    available: true,
-  },
-];
 
 const roles = ["All Roles", "Senior Software Engineer", "Data Scientist", "Product Manager"];
 const priceRanges = [
@@ -132,8 +54,11 @@ const ratingOptions = [
 ];
 
 const LiveSessions = () => {
+  const [professionals, setProfessionals] = useState<Professional[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedProfessional, setSelectedProfessional] = useState<Professional | null>(null);
   const [bookingDialogOpen, setBookingDialogOpen] = useState(false);
+  const { toast } = useToast();
   
   // Filter states
   const [selectedRole, setSelectedRole] = useState("All Roles");
@@ -141,6 +66,46 @@ const LiveSessions = () => {
   const [selectedRating, setSelectedRating] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Fetch professionals from database
+  useEffect(() => {
+    const fetchProfessionals = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("professionals")
+          .select("*")
+          .eq("available", true)
+          .order("rating", { ascending: false });
+
+        if (error) throw error;
+
+        setProfessionals(data.map(pro => ({
+          id: pro.id,
+          name: pro.name,
+          role: pro.role,
+          company: pro.company,
+          experience: pro.experience,
+          rating: Number(pro.rating),
+          reviews: pro.reviews,
+          price: pro.price,
+          skills: pro.skills || [],
+          avatar: pro.avatar || pro.name.split(' ').map(n => n[0]).join(''),
+          available: pro.available,
+        })));
+      } catch (error) {
+        console.error("Error fetching professionals:", error);
+        toast({
+          title: "Error loading professionals",
+          description: "Please try again later.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProfessionals();
+  }, [toast]);
 
   const handleBookNow = (professional: Professional) => {
     setSelectedProfessional(professional);
@@ -183,7 +148,7 @@ const LiveSessions = () => {
       }
       return true;
     });
-  }, [selectedRole, selectedPriceRange, selectedRating, searchQuery]);
+  }, [professionals, selectedRole, selectedPriceRange, selectedRating, searchQuery]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -386,8 +351,13 @@ const LiveSessions = () => {
           </p>
         </div>
 
-        {/* Professionals Grid */}
-        {filteredProfessionals.length > 0 ? (
+        {/* Loading State */}
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-16">
+            <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+            <p className="text-muted-foreground">Loading professionals...</p>
+          </div>
+        ) : filteredProfessionals.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
             {filteredProfessionals.map((pro) => (
               <div
