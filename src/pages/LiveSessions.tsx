@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Users, 
   ArrowLeft,
@@ -8,7 +9,6 @@ import {
   Clock,
   IndianRupee
 } from "lucide-react";
-
 const professionals = [
   {
     id: 1,
@@ -52,6 +52,15 @@ const professionals = [
 ];
 
 const LiveSessions = () => {
+  const { toast } = useToast();
+
+  const handleBookNow = () => {
+    toast({
+      title: "Coming Soon!",
+      description: "Live session booking will be available soon. Stay tuned!",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -158,7 +167,11 @@ const LiveSessions = () => {
                   </span>
                   <span className="text-sm text-muted-foreground">/session</span>
                 </div>
-                <Button variant="default" size="sm" disabled={!pro.available}>
+                <Button 
+                  variant="default" 
+                  size="sm" 
+                  onClick={handleBookNow}
+                >
                   Book Now
                 </Button>
               </div>
