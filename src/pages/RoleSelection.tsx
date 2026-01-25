@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Sparkles, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import logo from "@/assets/logo.png";
 
 const RoleSelection = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -63,11 +64,9 @@ const RoleSelection = () => {
 
         <div className="bg-card border border-border rounded-2xl shadow-large p-8 animate-scale-in">
           <div className="flex items-center justify-center gap-2 mb-8">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary">
-              <Sparkles className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <span className="font-display text-2xl font-bold text-foreground">
-              CareerANSTA
+            <img src={logo} alt="CareerANSTA" className="h-10 object-contain" />
+            <span className="font-display text-2xl font-extrabold tracking-wide">
+              <span className="text-white">Career</span><span className="text-[#ff9f1c]">ANSTA</span>
             </span>
           </div>
 
