@@ -44,6 +44,60 @@ export type Database = {
         }
         Relationships: []
       }
+      professionals: {
+        Row: {
+          available: boolean
+          avatar: string | null
+          bio: string | null
+          company: string
+          created_at: string
+          experience: string
+          id: string
+          name: string
+          price: number
+          rating: number
+          reviews: number
+          role: string
+          skills: string[]
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          available?: boolean
+          avatar?: string | null
+          bio?: string | null
+          company: string
+          created_at?: string
+          experience: string
+          id?: string
+          name: string
+          price: number
+          rating?: number
+          reviews?: number
+          role: string
+          skills?: string[]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          available?: boolean
+          avatar?: string | null
+          bio?: string | null
+          company?: string
+          created_at?: string
+          experience?: string
+          id?: string
+          name?: string
+          price?: number
+          rating?: number
+          reviews?: number
+          role?: string
+          skills?: string[]
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null

@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { 
   Brain, 
@@ -11,11 +12,55 @@ import {
   Sparkles,
   TrendingUp,
   Clock,
-  Target
+  Target,
+  Calendar,
+  IndianRupee,
+  Star
 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 const Dashboard = () => {
-  const userName = "John"; // TODO: Get from auth context
+  const { user, role, isLoading, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      navigate("/login");
+    }
+    if (!isLoading && user && !role) {
+      navigate("/role-selection");
+    }
+  }, [user, role, isLoading, navigate]);
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-pulse text-muted-foreground">Loading...</div>
+      </div>
+    );
+  }
+
+  // Professional Dashboard
+  if (role === "professional") {
+    return <ProfessionalDashboard user={user} onSignOut={handleSignOut} />;
+  }
+
+  // Student Dashboard (default)
+  return <StudentDashboard user={user} onSignOut={handleSignOut} />;
+};
+
+interface DashboardProps {
+  user: any;
+  onSignOut: () => void;
+}
+
+const StudentDashboard = ({ user, onSignOut }: DashboardProps) => {
+  const userName = user?.user_metadata?.full_name?.split(' ')[0] || "Student";
   
   const features = [
     {
@@ -79,11 +124,9 @@ const Dashboard = () => {
               <Button variant="ghost" size="icon">
                 <Settings className="h-5 w-5" />
               </Button>
-              <Link to="/">
-                <Button variant="ghost" size="icon">
-                  <LogOut className="h-5 w-5" />
-                </Button>
-              </Link>
+              <Button variant="ghost" size="icon" onClick={onSignOut}>
+                <LogOut className="h-5 w-5" />
+              </Button>
             </div>
           </div>
         </div>
@@ -214,6 +257,178 @@ const Dashboard = () => {
               </div>
             ))}
           </div>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+const ProfessionalDashboard = ({ user, onSignOut }: DashboardProps) => {
+  const userName = user?.user_metadata?.full_name?.split(' ')[0] || "Professional";
+
+  const stats = [
+    { icon: Users, label: "Total Sessions", value: "24", gradient: "primary" },
+    { icon: IndianRupee, label: "Earnings", value: "₹12,000", gradient: "accent" },
+    { icon: Star, label: "Rating", value: "4.8", gradient: "primary" },
+    { icon: Calendar, label: "Upcoming", value: "3", gradient: "accent" },
+  ];
+
+  const upcomingSessions = [
+    { student: "Amit Kumar", date: "Today, 4:00 PM", role: "Software Engineer", type: "Mock Interview" },
+    { student: "Sneha Reddy", date: "Tomorrow, 10:00 AM", role: "Data Scientist", type: "Career Guidance" },
+    { student: "Rahul Sharma", date: "Jan 27, 2:00 PM", role: "Product Manager", type: "Resume Review" },
+  ];
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="sticky top-0 z-50 glass border-b border-border">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="flex h-16 items-center justify-between">
+            <Link to="/" className="flex items-center gap-2 group">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-accent shadow-accent transition-all duration-300 group-hover:shadow-lg">
+                <Sparkles className="h-5 w-5 text-white" />
+              </div>
+              <span className="font-display text-xl font-bold text-foreground">
+                Career<span className="text-gradient-accent">ANSTA</span>
+              </span>
+            </Link>
+
+            <div className="flex items-center gap-3">
+              <span className="hidden md:inline-flex text-xs font-medium text-accent bg-accent/10 px-3 py-1 rounded-full border border-accent/20">
+                Professional
+              </span>
+              <Button variant="ghost" size="icon" className="relative">
+                <Bell className="h-5 w-5" />
+                <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-gradient-accent text-[10px] font-bold text-white flex items-center justify-center">
+                  2
+                </span>
+              </Button>
+              <Button variant="ghost" size="icon">
+                <Settings className="h-5 w-5" />
+              </Button>
+              <Button variant="ghost" size="icon" onClick={onSignOut}>
+                <LogOut className="h-5 w-5" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main className="container mx-auto px-4 lg:px-8 py-8">
+        {/* Welcome Section */}
+        <div className="mb-10">
+          <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground mb-2">
+            Welcome, <span className="text-gradient-accent">{userName}</span>! 💼
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            Manage your mentoring sessions and help students succeed.
+          </p>
+        </div>
+
+        {/* Quick Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+          {stats.map((stat, index) => {
+            const Icon = stat.icon;
+            const isOrange = stat.gradient === "primary";
+            return (
+              <div
+                key={index}
+                className="p-4 rounded-xl bg-card border border-border hover:border-accent/30 transition-all duration-300 group"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <div className={`h-10 w-10 rounded-lg flex items-center justify-center ${
+                    isOrange ? 'bg-gradient-primary' : 'bg-gradient-accent'
+                  } shadow-lg`}>
+                    <Icon className="h-5 w-5 text-white" />
+                  </div>
+                </div>
+                <p className="text-2xl font-bold text-foreground">{stat.value}</p>
+                <p className="text-sm text-muted-foreground">{stat.label}</p>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Action Cards */}
+        <div className="grid md:grid-cols-2 gap-6 mb-10">
+          {/* Manage Profile Card */}
+          <div className="bg-card border border-border rounded-2xl p-6">
+            <div className="flex items-start gap-4 mb-4">
+              <div className="h-14 w-14 rounded-2xl bg-gradient-accent flex items-center justify-center shadow-lg">
+                <Settings className="h-7 w-7 text-white" />
+              </div>
+              <div>
+                <h3 className="font-display text-xl font-semibold text-foreground mb-1">
+                  Manage Your Profile
+                </h3>
+                <p className="text-muted-foreground">
+                  Update your skills, experience, and availability settings.
+                </p>
+              </div>
+            </div>
+            <Button variant="secondary" className="w-full">
+              Edit Profile
+              <ArrowRight className="h-4 w-4 ml-2" />
+            </Button>
+          </div>
+
+          {/* Availability Card */}
+          <div className="bg-card border border-border rounded-2xl p-6">
+            <div className="flex items-start gap-4 mb-4">
+              <div className="h-14 w-14 rounded-2xl bg-gradient-primary flex items-center justify-center shadow-lg">
+                <Calendar className="h-7 w-7 text-white" />
+              </div>
+              <div>
+                <h3 className="font-display text-xl font-semibold text-foreground mb-1">
+                  Set Availability
+                </h3>
+                <p className="text-muted-foreground">
+                  Configure your available time slots for student bookings.
+                </p>
+              </div>
+            </div>
+            <Button variant="hero" className="w-full">
+              Manage Schedule
+              <ArrowRight className="h-4 w-4 ml-2" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Upcoming Sessions */}
+        <div>
+          <h2 className="font-display text-xl font-semibold text-foreground mb-6">
+            Upcoming Sessions
+          </h2>
+          <div className="bg-card border border-border rounded-2xl divide-y divide-border overflow-hidden">
+            {upcomingSessions.map((session, index) => (
+              <div key={index} className="flex items-center justify-between p-4 hover:bg-muted/30 transition-colors">
+                <div className="flex items-center gap-4">
+                  <div className="h-10 w-10 rounded-xl bg-gradient-accent flex items-center justify-center shadow-lg shadow-accent/20">
+                    <Users className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-foreground">{session.student}</p>
+                    <p className="text-sm text-muted-foreground">{session.type} • {session.role}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="font-medium text-foreground">{session.date}</p>
+                  <Button variant="ghost" size="sm" className="text-accent">
+                    Join
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Info Banner */}
+        <div className="mt-8 p-4 bg-accent/10 border border-accent/20 rounded-xl">
+          <p className="text-sm text-accent">
+            <strong>Note:</strong> To become a listed mentor, please complete your profile and wait for admin approval. 
+            Once approved, students will be able to book sessions with you.
+          </p>
         </div>
       </main>
     </div>

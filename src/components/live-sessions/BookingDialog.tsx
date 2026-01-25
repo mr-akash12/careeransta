@@ -19,7 +19,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 
 interface Professional {
-  id: number;
+  id: string;
   name: string;
   role: string;
   company: string;
