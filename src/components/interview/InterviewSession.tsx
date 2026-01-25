@@ -99,7 +99,7 @@ const CameraView = ({
   }, [stream]);
 
   return (
-    <div className="relative bg-muted rounded-xl overflow-hidden aspect-video">
+    <div className="relative bg-muted rounded-xl overflow-hidden border-2 border-border">
       {isActive && stream ? (
         <>
           <video
@@ -107,7 +107,7 @@ const CameraView = ({
             autoPlay
             playsInline
             muted
-            className="w-full h-full object-cover transform scale-x-[-1]"
+            className="w-full h-auto transform scale-x-[-1]"
           />
           {isRecording && (
             <div className="absolute top-2 right-2 flex items-center gap-1.5 px-2 py-1 rounded-full bg-destructive text-destructive-foreground text-xs font-medium">
@@ -117,7 +117,7 @@ const CameraView = ({
           )}
         </>
       ) : (
-        <div className="w-full h-full flex items-center justify-center">
+        <div className="w-full aspect-video flex items-center justify-center">
           <User className="h-12 w-12 text-muted-foreground" />
         </div>
       )}
