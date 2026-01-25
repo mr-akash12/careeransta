@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Sparkles } from "lucide-react";
+import { Menu, X } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,12 +29,7 @@ const Navbar = () => {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-primary shadow-primary transition-all duration-300 group-hover:shadow-lg">
-              <Sparkles className="h-5 w-5 text-white" />
-            </div>
-            <span className="font-display text-xl font-bold text-foreground">
-              Career<span className="text-gradient-primary">ANSTA</span>
-            </span>
+            <img src={logo} alt="CareerANSTA" className="h-10 object-contain" />
           </Link>
 
           {/* Desktop Navigation */}

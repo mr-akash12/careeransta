@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { Sparkles, Mail, Phone, MapPin, Twitter, Linkedin, Github } from "lucide-react";
+import { Mail, Phone, MapPin, Twitter, Linkedin, Github } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 const Footer = () => {
   const links = {
@@ -36,12 +37,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center gap-2 mb-4 group">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-primary shadow-primary transition-all duration-300 group-hover:shadow-lg">
-                <Sparkles className="h-5 w-5 text-white" />
-              </div>
-              <span className="font-display text-xl font-bold text-foreground">
-                Career<span className="text-gradient-primary">Ascend</span>
-              </span>
+              <img src={logo} alt="CareerANSTA" className="h-10 object-contain" />
             </Link>
             <p className="text-muted-foreground mb-6 max-w-sm">
               Empowering students and professionals with AI-powered career guidance, mock interviews, and personalized exam preparation.
