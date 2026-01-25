@@ -3,9 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Sparkles, Mail, Lock, Eye, EyeOff, User, ArrowLeft } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, User, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import logo from "@/assets/logo.png";
 
 const Signup = () => {
   // Scroll to top on page load
@@ -90,11 +91,9 @@ const Signup = () => {
 
           <div className="bg-card border border-border rounded-2xl shadow-xl p-8 animate-scale-in">
             <div className="flex items-center justify-center gap-2 mb-8">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-primary shadow-primary">
-                <Sparkles className="h-5 w-5 text-white" />
-              </div>
-              <span className="font-display text-2xl font-bold text-foreground">
-                Career<span className="text-gradient-primary">ANSTA</span>
+              <img src={logo} alt="CareerANSTA" className="h-10 object-contain" />
+              <span className="font-display text-2xl font-extrabold tracking-wide">
+                <span className="text-white">Career</span><span className="text-[#ff9f1c]">ANSTA</span>
               </span>
             </div>
 
@@ -173,11 +172,9 @@ const Signup = () => {
 
         <div className="bg-card border border-border rounded-2xl shadow-xl p-8 animate-scale-in">
           <div className="flex items-center justify-center gap-2 mb-8">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-primary shadow-primary">
-              <Sparkles className="h-5 w-5 text-white" />
-            </div>
-            <span className="font-display text-2xl font-bold text-foreground">
-              Career<span className="text-gradient-primary">Ascend</span>
+            <img src={logo} alt="CareerANSTA" className="h-10 object-contain" />
+            <span className="font-display text-2xl font-extrabold tracking-wide">
+              <span className="text-white">Career</span><span className="text-[#ff9f1c]">ANSTA</span>
             </span>
           </div>
 
