@@ -1,6 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import { Quote } from "lucide-react";
 
+// Import avatar images
+import avatar1 from "@/assets/testimonials/avatar-1.jpg";
+import avatar2 from "@/assets/testimonials/avatar-2.jpg";
+import avatar3 from "@/assets/testimonials/avatar-3.jpg";
+import avatar4 from "@/assets/testimonials/avatar-4.jpg";
+import avatar5 from "@/assets/testimonials/avatar-5.jpg";
+import avatar6 from "@/assets/testimonials/avatar-6.jpg";
+import avatar7 from "@/assets/testimonials/avatar-7.jpg";
+import avatar8 from "@/assets/testimonials/avatar-8.jpg";
+import avatar9 from "@/assets/testimonials/avatar-9.jpg";
+import avatar10 from "@/assets/testimonials/avatar-10.jpg";
+import avatar11 from "@/assets/testimonials/avatar-11.jpg";
+import avatar12 from "@/assets/testimonials/avatar-12.jpg";
+
 interface Testimonial {
   id: number;
   name: string;
@@ -16,35 +30,35 @@ const testimonials: Testimonial[] = [
     name: "Priya Sharma",
     date: "January 15, 2026",
     text: "It was a nice experience with you, this is my first interview in any company. Thank you for the opportunity!",
-    avatar: "PS",
+    avatar: avatar1,
   },
   {
     id: 2,
     name: "Rahul Verma",
     date: "January 10, 2026",
     text: "Great opportunity to improve myself, thank you so much for this platform!",
-    avatar: "RV",
+    avatar: avatar2,
   },
   {
     id: 3,
     name: "Ananya Patel",
     date: "January 8, 2026",
     text: "It's a good experience in my first interview, it was a good experience overall.",
-    avatar: "AP",
+    avatar: avatar3,
   },
   {
     id: 4,
     name: "Vikram Singh",
     date: "January 5, 2026",
     text: "Great session, and the questions were sharp and clear. Really helped me prepare.",
-    avatar: "VS",
+    avatar: avatar4,
   },
   {
     id: 5,
     name: "Sneha Reddy",
     date: "December 28, 2025",
     text: "Wonderful experience! Felt like a real world interview. Highly recommended!",
-    avatar: "SR",
+    avatar: avatar5,
     highlighted: true,
   },
   {
@@ -52,49 +66,49 @@ const testimonials: Testimonial[] = [
     name: "Arjun Kumar",
     date: "December 20, 2025",
     text: "Good opportunity for us, really it was helpful for our preparation.",
-    avatar: "AK",
+    avatar: avatar6,
   },
   {
     id: 7,
     name: "Meera Nair",
     date: "December 15, 2025",
     text: "This is my best interview and I learn many details. It's good to practice interviews here.",
-    avatar: "MN",
+    avatar: avatar7,
   },
   {
     id: 8,
     name: "Karthik Iyer",
     date: "December 10, 2025",
     text: "It was good experience. By conducting this type of interviews we can overcome our fear.",
-    avatar: "KI",
+    avatar: avatar8,
   },
   {
     id: 9,
     name: "Divya Menon",
     date: "December 5, 2025",
     text: "Yea it's very fantastic! It's good platform for beginners and the HR questions are helpful.",
-    avatar: "DM",
+    avatar: avatar9,
   },
   {
     id: 10,
     name: "Rohit Gupta",
     date: "November 28, 2025",
     text: "It's a wonderful experience for me to attend like this mock interview.",
-    avatar: "RG",
+    avatar: avatar10,
   },
   {
     id: 11,
     name: "Pooja Desai",
     date: "November 20, 2025",
     text: "Amazing platform! The AI interviewer was so realistic and helpful.",
-    avatar: "PD",
+    avatar: avatar11,
   },
   {
     id: 12,
     name: "Amit Joshi",
     date: "November 15, 2025",
     text: "Best mock interview experience I've ever had. Highly recommend to all students!",
-    avatar: "AJ",
+    avatar: avatar12,
   },
 ];
 
@@ -118,9 +132,11 @@ const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => (
 
     {/* User Info */}
     <div className="flex items-center gap-3">
-      <div className="h-10 w-10 rounded-full bg-gradient-to-br from-[#ff9f1c] to-[#ffca3a] flex items-center justify-center text-white font-semibold text-sm">
-        {testimonial.avatar}
-      </div>
+      <img 
+        src={testimonial.avatar} 
+        alt={testimonial.name}
+        className="h-10 w-10 rounded-full object-cover ring-2 ring-[#ff9f1c]/20"
+      />
       <div>
         <p className={`font-semibold text-sm ${testimonial.highlighted ? "text-[#ff9f1c]" : "text-foreground"}`}>
           {testimonial.name}
