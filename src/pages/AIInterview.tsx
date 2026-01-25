@@ -120,6 +120,20 @@ const AIInterview = () => {
     setStep('feedback');
   }, [stopCamera, endConversation]);
 
+  // Auto-end session when time is up
+  useEffect(() => {
+    if (!sessionStarted) return;
+    
+    const durationMs = parseInt(duration) * 60 * 1000; // Convert minutes to ms
+    const timer = setTimeout(() => {
+      stopCamera();
+      endConversation();
+      setStep('feedback');
+    }, durationMs);
+
+    return () => clearTimeout(timer);
+  }, [sessionStarted, duration, stopCamera, endConversation]);
+
   const handleStartNew = useCallback(() => {
     resetConversation();
     setStep('details');
