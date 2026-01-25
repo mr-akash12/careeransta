@@ -63,7 +63,7 @@ const HeroSection = () => {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up" style={{ animationDelay: "0.3s" }}>
             <Link to="/signup">
-              <Button variant="hero" size="xl" className="group">
+              <Button variant="sunset" size="xl" className="group">
                 <Sparkles className="h-5 w-5" />
                 Start Free Today
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
