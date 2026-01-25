@@ -38,8 +38,8 @@ const Footer = () => {
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center gap-2 mb-4 group">
               <img src={logo} alt="CareerANSTA" className="h-10 object-contain" />
-              <span className="font-display text-xl font-bold text-foreground">
-                CAREER<span className="text-primary">ANSTA</span>
+              <span className="font-display text-xl font-bold">
+                <span className="text-foreground">Career</span><span className="text-primary">ANSTA</span>
               </span>
             </Link>
             <p className="text-muted-foreground mb-6 max-w-sm">
