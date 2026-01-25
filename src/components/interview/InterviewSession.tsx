@@ -7,6 +7,7 @@ import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import { VUMeter } from './VUMeter';
 import type { ConversationState } from '@/hooks/useConversationController';
+import aiInterviewerImg from '@/assets/ai-interviewer.webp';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -262,8 +263,18 @@ export const InterviewSession = ({
             {/* AI Interviewer */}
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground text-center">AI Interviewer</p>
-              <div className="bg-muted/50 rounded-xl p-4 aspect-video flex items-center justify-center border border-dashed border-border">
-                <AudioWaveform isActive={isSpeaking} />
+              <div className="relative bg-muted/50 rounded-xl overflow-hidden aspect-video border border-border">
+                <img 
+                  src={aiInterviewerImg} 
+                  alt="AI Interviewer" 
+                  className="w-full h-full object-cover"
+                />
+                {/* Audio waveform overlay when speaking */}
+                {isSpeaking && (
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-3">
+                    <AudioWaveform isActive={isSpeaking} />
+                  </div>
+                )}
               </div>
             </div>
 
