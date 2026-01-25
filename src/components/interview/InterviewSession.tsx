@@ -288,6 +288,10 @@ export const InterviewSession = ({
                   </div>
                 )}
               </div>
+              <p className="text-sm font-medium text-center mt-2">
+                <span className="text-accent">Naira</span>
+                <span className="text-muted-foreground"> - AI Interviewer</span>
+              </p>
             </div>
 
             {/* User Camera */}
