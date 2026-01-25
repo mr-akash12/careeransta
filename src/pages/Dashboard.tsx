@@ -9,7 +9,6 @@ import {
   LogOut,
   Settings,
   Bell,
-  Sparkles,
   TrendingUp,
   Clock,
   Target,
@@ -18,6 +17,7 @@ import {
   Star
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import logo from "@/assets/logo.png";
 
 const Dashboard = () => {
   const { user, role, isLoading, signOut } = useAuth();
@@ -106,11 +106,9 @@ const StudentDashboard = ({ user, onSignOut }: DashboardProps) => {
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <Link to="/" className="flex items-center gap-2 group">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-primary shadow-primary transition-all duration-300 group-hover:shadow-lg">
-                <Sparkles className="h-5 w-5 text-white" />
-              </div>
-              <span className="font-display text-xl font-bold text-foreground">
-                Career<span className="text-gradient-primary">ANSTA</span>
+              <img src={logo} alt="CareerANSTA" className="h-10 object-contain" />
+              <span className="font-display text-2xl font-extrabold tracking-wide">
+                <span className="text-white">Career</span><span className="text-[#ff9f1c]">ANSTA</span>
               </span>
             </Link>
 
@@ -286,11 +284,9 @@ const ProfessionalDashboard = ({ user, onSignOut }: DashboardProps) => {
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <Link to="/" className="flex items-center gap-2 group">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-accent shadow-accent transition-all duration-300 group-hover:shadow-lg">
-                <Sparkles className="h-5 w-5 text-white" />
-              </div>
-              <span className="font-display text-xl font-bold text-foreground">
-                Career<span className="text-gradient-accent">ANSTA</span>
+              <img src={logo} alt="CareerANSTA" className="h-10 object-contain" />
+              <span className="font-display text-2xl font-extrabold tracking-wide">
+                <span className="text-white">Career</span><span className="text-[#ff9f1c]">ANSTA</span>
               </span>
             </Link>
 
