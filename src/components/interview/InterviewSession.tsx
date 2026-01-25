@@ -7,7 +7,7 @@ import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import { VUMeter } from './VUMeter';
 import type { ConversationState } from '@/hooks/useConversationController';
-import aiInterviewerImg from '@/assets/ai-interviewer.webp';
+import aiInterviewerImg from '@/assets/ai-interviewer.png';
 
 interface Message {
   role: 'user' | 'assistant';
