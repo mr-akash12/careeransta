@@ -30,6 +30,9 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
             <img src={logo} alt="CareerANSTA" className="h-10 object-contain" />
+            <span className="font-display text-xl font-bold text-foreground">
+              CAREER<span className="text-primary">ANSTA</span>
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
