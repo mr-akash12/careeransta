@@ -8,10 +8,9 @@ import { PermissionRequest } from '@/components/interview/PermissionRequest';
 import { InterviewSession } from '@/components/interview/InterviewSession';
 import { StepTabs } from '@/components/interview/StepTabs';
 import { FeedbackReport } from '@/components/interview/FeedbackReport';
-import { useInterviewAI, type InterviewMode } from '@/hooks/useInterviewAI';
-import { useTextToSpeech } from '@/hooks/useTextToSpeech';
-import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
+import { useConversationController, type ConversationState } from '@/hooks/useConversationController';
 import { useCamera } from '@/hooks/useCamera';
+import { type InterviewMode } from '@/hooks/useInterviewAI';
 
 type Step = 'details' | 'config' | 'permission' | 'interview' | 'feedback';
 
@@ -30,13 +29,30 @@ const AIInterview = () => {
   const [cameraGranted, setCameraGranted] = useState(false);
   const [micGranted, setMicGranted] = useState(false);
   const [isRequestingAccess, setIsRequestingAccess] = useState(false);
-  
-  // Session state
-  const [sessionStarted, setSessionStarted] = useState(false);
 
-  const { isLoading, conversationHistory, feedback, startInterview, respondToAI, endInterview, reset } = useInterviewAI();
-  const { isSpeaking, speak, stop: stopSpeaking } = useTextToSpeech();
-  const { isListening, transcript, interimTranscript, startListening, stopListening, resetTranscript } = useSpeechRecognition();
+  // Conversation state tracking
+  const [convState, setConvState] = useState<ConversationState>('idle');
+
+  const {
+    state,
+    sessionStarted,
+    isAILoading,
+    isSpeaking,
+    isListening,
+    transcript,
+    interimTranscript,
+    conversationHistory,
+    feedback,
+    start: startConversation,
+    toggleMic,
+    forceSend,
+    end: endConversation,
+    reset: resetConversation,
+  } = useConversationController({
+    onStateChange: setConvState,
+    silenceTimeout: 2500, // 2.5 seconds of silence before processing
+  });
+
   const { isActive: isCameraActive, stream, startCamera, stopCamera } = useCamera();
 
   const handleUpload = useCallback((content: string, role: string) => {
@@ -88,61 +104,21 @@ const AIInterview = () => {
       customInstructions && `Custom Instructions: ${customInstructions}`,
     ].filter(Boolean).join('\n');
     
-    const message = await startInterview(
+    await startConversation(
       resumeData.content + '\n\n' + instructions,
       resumeData.role,
       mode
     );
-    
-    if (message) {
-      setSessionStarted(true);
-      speak(message);
-    }
-  }, [interviewType, interviewRound, duration, customInstructions, resumeData, startInterview, speak]);
-
-  const handleToggleMic = useCallback(() => {
-    if (isSpeaking) {
-      stopSpeaking();
-    }
-    
-    if (isListening) {
-      stopListening();
-      if (transcript.trim()) {
-        handleSendResponse(transcript);
-        resetTranscript();
-      }
-    } else {
-      startListening();
-    }
-  }, [isListening, isSpeaking, stopListening, stopSpeaking, startListening, transcript, resetTranscript]);
-
-  const handleSendResponse = useCallback(async (text: string) => {
-    if (!text.trim() || isLoading) return;
-    stopSpeaking();
-    
-    const modeMap: Record<string, InterviewMode> = {
-      'Behavioral': 'friendly',
-      'Technical / Coding': 'standard',
-      'System Design': 'stress',
-    };
-    const mode = modeMap[interviewType] || 'standard';
-    
-    const message = await respondToAI(text, mode);
-    if (message) {
-      speak(message);
-    }
-  }, [isLoading, stopSpeaking, respondToAI, interviewType, speak]);
+  }, [interviewType, interviewRound, duration, customInstructions, resumeData, startConversation]);
 
   const handleEndSession = useCallback(async () => {
-    stopListening();
-    stopSpeaking();
     stopCamera();
-    await endInterview();
+    await endConversation();
     setStep('feedback');
-  }, [stopListening, stopSpeaking, stopCamera, endInterview]);
+  }, [stopCamera, endConversation]);
 
   const handleStartNew = useCallback(() => {
-    reset();
+    resetConversation();
     setStep('details');
     setResumeData({ content: '', role: '' });
     setDuration('15');
@@ -152,14 +128,12 @@ const AIInterview = () => {
     setShowCustomInstructions(false);
     setCameraGranted(false);
     setMicGranted(false);
-    setSessionStarted(false);
-  }, [reset]);
+  }, [resetConversation]);
 
   useEffect(() => {
     return () => {
       stopCamera();
-      stopSpeaking();
-      stopListening();
+      resetConversation();
     };
   }, []);
 
@@ -168,6 +142,17 @@ const AIInterview = () => {
       case 'details': return 1;
       case 'config': return 2;
       default: return 0;
+    }
+  };
+
+  // Get status text based on conversation state
+  const getStatusText = () => {
+    switch (state) {
+      case 'ai_speaking': return 'AI is speaking...';
+      case 'user_listening': return 'Listening for your response...';
+      case 'user_processing': return 'Processing your response...';
+      case 'ai_responding': return 'AI is thinking...';
+      default: return 'Ready to start';
     }
   };
 
@@ -210,7 +195,7 @@ const AIInterview = () => {
               <h1 className="font-display text-3xl font-bold text-foreground mb-2">AI Mock Interview</h1>
               <p className="text-muted-foreground">Practice with our AI interviewer and get personalized feedback</p>
             </div>
-            <ResumeUpload onUpload={handleUpload} isLoading={isLoading} />
+            <ResumeUpload onUpload={handleUpload} isLoading={isAILoading} />
           </div>
         )}
 
@@ -252,11 +237,14 @@ const AIInterview = () => {
               currentTranscript={isListening ? (transcript + ' ' + interimTranscript).trim() : undefined}
               isListening={isListening}
               isSpeaking={isSpeaking}
-              isLoading={isLoading}
+              isLoading={isAILoading}
               isCameraActive={isCameraActive}
               stream={stream}
               resumeContent={resumeData.content}
-              onToggleMic={handleToggleMic}
+              conversationState={state}
+              statusText={getStatusText()}
+              onToggleMic={toggleMic}
+              onForceSend={forceSend}
               onToggleCamera={isCameraActive ? stopCamera : startCamera}
               onStartSession={handleStartSession}
               onPauseSession={() => {}}
