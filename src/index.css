@@ -14,15 +14,15 @@
     /* Force dark mode by default */
     color-scheme: dark;
 
-    /* Core Surfaces - Deep Charcoal */
-    --background: 220 20% 6%;
-    --foreground: 220 13% 91%;
+    /* Core Surfaces - Dark Green/Teal */
+    --background: 160 25% 6%;
+    --foreground: 160 10% 92%;
 
-    --card: 220 18% 10%;
-    --card-foreground: 220 13% 91%;
+    --card: 160 22% 10%;
+    --card-foreground: 160 10% 92%;
 
-    --popover: 220 18% 10%;
-    --popover-foreground: 220 13% 91%;
+    --popover: 160 22% 10%;
+    --popover-foreground: 160 10% 92%;
 
     /* Brand Colors - Orange Gradient */
     --primary: 28 100% 55%;
@@ -32,9 +32,9 @@
     --secondary: 262 83% 58%;
     --secondary-foreground: 0 0% 100%;
 
-    /* Muted - Dark Gray */
-    --muted: 220 16% 14%;
-    --muted-foreground: 220 9% 64%;
+    /* Muted - Dark Green */
+    --muted: 160 20% 12%;
+    --muted-foreground: 160 8% 58%;
 
     /* Accent - Amber */
     --accent: 38 92% 50%;
@@ -53,9 +53,9 @@
     --destructive: 0 72% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    /* UI Elements - Subtle borders */
-    --border: 220 16% 16%;
-    --input: 220 16% 14%;
+    /* UI Elements - Subtle green-tinted borders */
+    --border: 160 18% 16%;
+    --input: 160 18% 12%;
     --ring: 28 100% 55%;
 
     --radius: 0.875rem;
@@ -63,8 +63,8 @@
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(28 100% 55%) 0%, hsl(38 92% 60%) 100%);
     --gradient-accent: linear-gradient(135deg, hsl(262 83% 58%) 0%, hsl(280 70% 50%) 100%);
-    --gradient-hero: linear-gradient(180deg, hsl(220 20% 6%) 0%, hsl(220 18% 8%) 50%, hsl(220 16% 10%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(220 18% 12%) 0%, hsl(220 18% 10%) 100%);
+    --gradient-hero: linear-gradient(180deg, hsl(160 25% 5%) 0%, hsl(160 22% 7%) 50%, hsl(160 20% 9%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(160 22% 12%) 0%, hsl(160 22% 10%) 100%);
     --gradient-success: linear-gradient(135deg, hsl(142 72% 40%) 0%, hsl(160 65% 45%) 100%);
     --gradient-glow-orange: radial-gradient(ellipse at center, hsl(28 100% 55% / 0.15) 0%, transparent 70%);
     --gradient-glow-purple: radial-gradient(ellipse at center, hsl(262 83% 58% / 0.15) 0%, transparent 70%);
@@ -80,13 +80,13 @@
     --shadow-glow-purple: 0 0 40px 0 hsl(262 83% 58% / 0.2);
 
     /* Sidebar */
-    --sidebar-background: 220 20% 5%;
-    --sidebar-foreground: 220 13% 85%;
+    --sidebar-background: 160 25% 5%;
+    --sidebar-foreground: 160 10% 85%;
     --sidebar-primary: 28 100% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 16% 14%;
-    --sidebar-accent-foreground: 220 13% 91%;
-    --sidebar-border: 220 16% 16%;
+    --sidebar-accent: 160 20% 12%;
+    --sidebar-accent-foreground: 160 10% 92%;
+    --sidebar-border: 160 18% 16%;
     --sidebar-ring: 28 100% 55%;
 
     /* Timer Colors */
@@ -218,8 +218,8 @@
   /* Glass effect for dark mode */
   .glass {
     @apply backdrop-blur-xl;
-    background: hsl(220 18% 8% / 0.85);
-    border-bottom: 1px solid hsl(220 16% 18% / 0.5);
+    background: hsl(160 22% 7% / 0.85);
+    border-bottom: 1px solid hsl(160 18% 18% / 0.5);
   }
 
   /* Feature card with glow */
