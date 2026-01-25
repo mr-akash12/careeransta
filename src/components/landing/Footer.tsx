@@ -53,7 +53,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
                 <Phone className="h-4 w-4 text-primary" />
-                <span className="text-sm">+91 9876543210</span>
+                <span className="text-sm">+91 966874****</span>
               </div>
               <div className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
                 <MapPin className="h-4 w-4 text-primary" />
@@ -129,7 +129,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
-            © 2024 CareerANSTA. All rights reserved.
+            © 2026 CareerANSTA. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
             <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
