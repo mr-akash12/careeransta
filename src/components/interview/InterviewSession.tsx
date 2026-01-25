@@ -264,7 +264,7 @@ export const InterviewSession = ({
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground text-center">AI Interviewer</p>
               <div className={cn(
-                "relative bg-muted/50 rounded-xl overflow-hidden aspect-video border-2 transition-all duration-300",
+                "relative bg-muted/50 rounded-xl overflow-hidden border-2 transition-all duration-300",
                 isSpeaking 
                   ? "border-accent shadow-[0_0_20px_rgba(34,197,94,0.4)] animate-pulse" 
                   : "border-border"
@@ -272,7 +272,7 @@ export const InterviewSession = ({
                 <img 
                   src={aiInterviewerImg} 
                   alt="AI Interviewer" 
-                  className="w-full h-full object-contain"
+                  className="w-full h-auto"
                 />
                 {/* Audio waveform overlay when speaking */}
                 {isSpeaking && (
