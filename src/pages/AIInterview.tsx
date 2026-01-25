@@ -10,6 +10,7 @@ import { StepTabs } from '@/components/interview/StepTabs';
 import { FeedbackReport } from '@/components/interview/FeedbackReport';
 import { useConversationController, type ConversationState } from '@/hooks/useConversationController';
 import { useCamera } from '@/hooks/useCamera';
+import { useAudioAnalyzer } from '@/hooks/useAudioAnalyzer';
 import { type InterviewMode } from '@/hooks/useInterviewAI';
 
 type Step = 'details' | 'config' | 'permission' | 'interview' | 'feedback';
@@ -54,6 +55,7 @@ const AIInterview = () => {
   });
 
   const { isActive: isCameraActive, stream, startCamera, stopCamera } = useCamera();
+  const { volume: micVolume, frequencyData: micFrequencyData, start: startAudioAnalyzer, stop: stopAudioAnalyzer, isActive: isAudioAnalyzerActive } = useAudioAnalyzer();
 
   const handleUpload = useCallback((content: string, role: string) => {
     setResumeData({ content, role });
@@ -130,9 +132,19 @@ const AIInterview = () => {
     setMicGranted(false);
   }, [resetConversation]);
 
+  // Start/stop audio analyzer based on listening state
+  useEffect(() => {
+    if (isListening && !isAudioAnalyzerActive) {
+      startAudioAnalyzer();
+    } else if (!isListening && isAudioAnalyzerActive) {
+      stopAudioAnalyzer();
+    }
+  }, [isListening, isAudioAnalyzerActive, startAudioAnalyzer, stopAudioAnalyzer]);
+
   useEffect(() => {
     return () => {
       stopCamera();
+      stopAudioAnalyzer();
       resetConversation();
     };
   }, []);
@@ -243,6 +255,8 @@ const AIInterview = () => {
               resumeContent={resumeData.content}
               conversationState={state}
               statusText={getStatusText()}
+              micVolume={micVolume}
+              micFrequencyData={micFrequencyData}
               onToggleMic={toggleMic}
               onForceSend={forceSend}
               onToggleCamera={isCameraActive ? stopCamera : startCamera}
