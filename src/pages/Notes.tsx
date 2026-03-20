@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, FileText, Sparkles, ArrowRight, ChevronDown, ChevronUp, Copy, Check } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { ArrowLeft, FileText, Sparkles, ArrowRight, ChevronDown, ChevronUp, Copy, Check, Search } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { toast } from "sonner";
 
@@ -40,6 +41,16 @@ const Notes = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set());
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredTopics = useMemo(() => {
+    if (!searchQuery.trim()) return topics;
+    const q = searchQuery.toLowerCase();
+    return topics.filter(t =>
+      t.label.toLowerCase().includes(q) ||
+      t.description.toLowerCase().includes(q)
+    );
+  }, [searchQuery]);
 
   const handleGenerateNotes = async () => {
     if (!selectedTopic || !selectedSubtopic) return;
@@ -166,21 +177,34 @@ const Notes = () => {
           {/* Step 1: Topic Selection */}
           {currentStep === "topic" && (
             <div className="animate-fade-in">
-              <h2 className="font-display text-xl font-semibold text-foreground mb-6 text-center">
+              <h2 className="font-display text-xl font-semibold text-foreground mb-4 text-center">
                 Choose a Topic
               </h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {topics.map((topic) => (
-                  <button
-                    key={topic.id}
-                    onClick={() => setSelectedTopic(topic.id)}
-                    className="p-4 rounded-xl border-2 border-border hover:border-primary/50 transition-all text-center group"
-                  >
-                    <span className="text-3xl mb-2 block">{topic.icon}</span>
-                    <p className="font-medium text-foreground text-sm">{topic.label}</p>
-                  </button>
-                ))}
+              <div className="relative mb-4">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search topics..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9"
+                />
               </div>
+              {filteredTopics.length === 0 ? (
+                <p className="text-center text-muted-foreground py-8">No topics match your search.</p>
+              ) : (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {filteredTopics.map((topic) => (
+                    <button
+                      key={topic.id}
+                      onClick={() => { setSelectedTopic(topic.id); setSearchQuery(""); }}
+                      className="p-4 rounded-xl border-2 border-border hover:border-primary/50 transition-all text-center group"
+                    >
+                      <span className="text-3xl mb-2 block">{topic.icon}</span>
+                      <p className="font-medium text-foreground text-sm">{topic.label}</p>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
