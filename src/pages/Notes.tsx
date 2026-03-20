@@ -2,9 +2,10 @@ import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, FileText, Sparkles, ArrowRight, ChevronDown, ChevronUp, Copy, Check, Search } from "lucide-react";
+import { ArrowLeft, FileText, Sparkles, ArrowRight, Search } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { toast } from "sonner";
+import NotesDisplay, { type NotesData } from "@/components/notes/NotesDisplay";
 
 const topics = [
   { id: "python", label: "Python", icon: "🐍", description: "Core Python concepts, OOP, data structures" },
@@ -28,19 +29,11 @@ const subtopicMap: Record<string, string[]> = {
   "system-design": ["Load Balancing", "Caching", "Database Sharding", "Microservices", "Message Queues", "API Design", "CAP Theorem", "Rate Limiting"],
 };
 
-interface NoteSection {
-  heading: string;
-  content: string;
-  code?: string;
-}
-
 const Notes = () => {
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [selectedSubtopic, setSelectedSubtopic] = useState<string | null>(null);
-  const [notes, setNotes] = useState<NoteSection[]>([]);
+  const [notesData, setNotesData] = useState<NotesData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set());
-  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredTopics = useMemo(() => {
@@ -55,7 +48,7 @@ const Notes = () => {
   const handleGenerateNotes = async () => {
     if (!selectedTopic || !selectedSubtopic) return;
     setIsLoading(true);
-    setNotes([]);
+    setNotesData(null);
 
     try {
       const response = await fetch(
@@ -80,8 +73,12 @@ const Notes = () => {
 
       const data = await response.json();
       if (data.success && Array.isArray(data.sections)) {
-        setNotes(data.sections);
-        setExpandedSections(new Set(data.sections.map((_: any, i: number) => i)));
+        setNotesData({
+          title: data.title || selectedSubtopic,
+          subtitle: data.subtitle || "",
+          tags: data.tags || [],
+          sections: data.sections,
+        });
       } else {
         throw new Error("Invalid response");
       }
@@ -93,23 +90,9 @@ const Notes = () => {
     }
   };
 
-  const toggleSection = (index: number) => {
-    setExpandedSections(prev => {
-      const next = new Set(prev);
-      next.has(index) ? next.delete(index) : next.add(index);
-      return next;
-    });
-  };
-
-  const copyCode = (code: string, index: number) => {
-    navigator.clipboard.writeText(code);
-    setCopiedIndex(index);
-    setTimeout(() => setCopiedIndex(null), 2000);
-  };
-
   const handleBack = () => {
-    if (notes.length > 0) {
-      setNotes([]);
+    if (notesData) {
+      setNotesData(null);
     } else if (selectedSubtopic) {
       setSelectedSubtopic(null);
     } else if (selectedTopic) {
@@ -117,22 +100,22 @@ const Notes = () => {
     }
   };
 
-  const currentStep = !selectedTopic ? "topic" : !selectedSubtopic ? "subtopic" : notes.length > 0 ? "notes" : "subtopic";
+  const currentStep = !selectedTopic ? "topic" : !selectedSubtopic ? "subtopic" : notesData ? "notes" : "subtopic";
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[hsl(240,25%,4%)]">
       {/* Header */}
-      <header className="sticky top-0 z-50 glass border-b border-border">
+      <header className="sticky top-0 z-50 bg-[hsl(240,20%,5%)]/92 backdrop-blur-xl border-b border-[hsl(240,15%,20%)]">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <Link to="/dashboard" className="flex items-center gap-2">
               <img src={logo} alt="CareerANSTA" className="h-10 object-contain" />
               <span className="font-display text-2xl font-extrabold tracking-wide">
-                <span className="text-white">Career</span><span className="text-[#ff9f1c]">ANSTA</span>
+                <span className="text-white">Career</span><span className="text-[hsl(35,100%,55%)]">ANSTA</span>
               </span>
             </Link>
             <Link to="/dashboard">
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="text-[hsl(240,15%,65%)] hover:text-white">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Dashboard
               </Button>
@@ -141,66 +124,66 @@ const Notes = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 lg:px-8 py-8 max-w-3xl">
+      <main className="container mx-auto px-4 lg:px-8 py-8 max-w-4xl">
         {/* Title */}
         <div className="text-center mb-8">
-          <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-accent mb-4 shadow-lg">
+          <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[hsl(250,100%,70%)] to-[hsl(160,80%,55%)] mb-4 shadow-lg">
             <FileText className="h-8 w-8 text-white" />
           </div>
-          <h1 className="font-display text-3xl font-bold text-foreground mb-2">
+          <h1 className="font-display text-3xl font-extrabold text-[hsl(240,15%,92%)] mb-2 tracking-tight">
             Study Notes
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-[hsl(240,15%,60%)]">
             AI-generated notes on any topic — pick a subject and start learning
           </p>
         </div>
 
         {/* Breadcrumb */}
         {selectedTopic && (
-          <div className="mb-6 p-3 rounded-xl bg-muted/50 border border-border flex items-center gap-2 text-sm">
-            <span className="text-muted-foreground">
+          <div className="mb-6 p-3 rounded-xl bg-[hsl(240,15%,10%)] border border-[hsl(240,15%,20%)] flex items-center gap-2 text-sm">
+            <span className="text-[hsl(240,15%,60%)]">
               {topics.find(t => t.id === selectedTopic)?.icon}{" "}
-              <span className="font-medium text-foreground">
+              <span className="font-medium text-[hsl(240,15%,90%)]">
                 {topics.find(t => t.id === selectedTopic)?.label}
               </span>
             </span>
             {selectedSubtopic && (
               <>
-                <ArrowRight className="h-3 w-3 text-muted-foreground" />
-                <span className="font-medium text-foreground">{selectedSubtopic}</span>
+                <ArrowRight className="h-3 w-3 text-[hsl(240,15%,40%)]" />
+                <span className="font-medium text-[hsl(240,15%,90%)]">{selectedSubtopic}</span>
               </>
             )}
           </div>
         )}
 
-        <div className="bg-card border border-border rounded-2xl p-6 md:p-8">
+        <div className={currentStep === "notes" ? "" : "bg-[hsl(240,15%,10%)] border border-[hsl(240,15%,20%)] rounded-2xl p-6 md:p-8"}>
           {/* Step 1: Topic Selection */}
           {currentStep === "topic" && (
             <div className="animate-fade-in">
-              <h2 className="font-display text-xl font-semibold text-foreground mb-4 text-center">
+              <h2 className="font-display text-xl font-semibold text-[hsl(240,15%,92%)] mb-4 text-center">
                 Choose a Topic
               </h2>
               <div className="relative mb-4">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[hsl(240,15%,40%)]" />
                 <Input
                   placeholder="Search topics..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9"
+                  className="pl-9 bg-[hsl(240,20%,6%)] border-[hsl(240,15%,20%)] text-[hsl(240,15%,90%)] placeholder:text-[hsl(240,15%,35%)]"
                 />
               </div>
               {filteredTopics.length === 0 ? (
-                <p className="text-center text-muted-foreground py-8">No topics match your search.</p>
+                <p className="text-center text-[hsl(240,15%,50%)] py-8">No topics match your search.</p>
               ) : (
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {filteredTopics.map((topic) => (
                     <button
                       key={topic.id}
                       onClick={() => { setSelectedTopic(topic.id); setSearchQuery(""); }}
-                      className="p-4 rounded-xl border-2 border-border hover:border-primary/50 transition-all text-center group"
+                      className="p-4 rounded-xl border-2 border-[hsl(240,15%,20%)] hover:border-[hsl(250,100%,70%)]/50 bg-[hsl(240,15%,8%)] transition-all text-center group active:scale-[0.97]"
                     >
                       <span className="text-3xl mb-2 block">{topic.icon}</span>
-                      <p className="font-medium text-foreground text-sm">{topic.label}</p>
+                      <p className="font-medium text-[hsl(240,15%,90%)] text-sm">{topic.label}</p>
                     </button>
                   ))}
                 </div>
@@ -211,7 +194,7 @@ const Notes = () => {
           {/* Step 2: Subtopic Selection */}
           {currentStep === "subtopic" && selectedTopic && (
             <div className="animate-fade-in">
-              <h2 className="font-display text-xl font-semibold text-foreground mb-6 text-center">
+              <h2 className="font-display text-xl font-semibold text-[hsl(240,15%,92%)] mb-6 text-center">
                 Choose a Subtopic
               </h2>
               <div className="grid grid-cols-2 gap-3">
@@ -219,18 +202,18 @@ const Notes = () => {
                   <button
                     key={sub}
                     onClick={() => setSelectedSubtopic(sub)}
-                    className={`p-3 rounded-xl border-2 transition-all text-left ${
+                    className={`p-3 rounded-xl border-2 transition-all text-left active:scale-[0.97] ${
                       selectedSubtopic === sub
-                        ? "border-primary bg-primary/5"
-                        : "border-border hover:border-primary/50"
+                        ? "border-[hsl(250,100%,70%)] bg-[hsl(250,100%,70%)]/5"
+                        : "border-[hsl(240,15%,20%)] hover:border-[hsl(250,100%,70%)]/50 bg-[hsl(240,15%,8%)]"
                     }`}
                   >
-                    <p className="font-medium text-foreground text-sm">{sub}</p>
+                    <p className="font-medium text-[hsl(240,15%,90%)] text-sm">{sub}</p>
                   </button>
                 ))}
               </div>
               <div className="flex gap-4 mt-6">
-                <Button variant="outline" size="lg" className="flex-1" onClick={handleBack}>
+                <Button variant="outline" size="lg" className="flex-1 border-[hsl(240,15%,20%)] text-[hsl(240,15%,70%)] hover:bg-[hsl(240,15%,12%)]" onClick={handleBack}>
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back
                 </Button>
@@ -258,52 +241,12 @@ const Notes = () => {
           )}
 
           {/* Step 3: Notes Display */}
-          {currentStep === "notes" && notes.length > 0 && (
+          {currentStep === "notes" && notesData && (
             <div className="animate-fade-in">
-              <h2 className="font-display text-xl font-semibold text-foreground mb-6">
-                {selectedSubtopic} — Notes
-              </h2>
-              <div className="space-y-4">
-                {notes.map((section, index) => (
-                  <div key={index} className="border border-border rounded-xl overflow-hidden">
-                    <button
-                      onClick={() => toggleSection(index)}
-                      className="w-full flex items-center justify-between p-4 bg-muted/30 hover:bg-muted/50 transition-colors"
-                    >
-                      <span className="font-semibold text-foreground text-left">{section.heading}</span>
-                      {expandedSections.has(index) ? (
-                        <ChevronUp className="h-4 w-4 text-muted-foreground shrink-0" />
-                      ) : (
-                        <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />
-                      )}
-                    </button>
-                    {expandedSections.has(index) && (
-                      <div className="p-4 space-y-3">
-                        <p className="text-foreground leading-relaxed whitespace-pre-line">{section.content}</p>
-                        {section.code && (
-                          <div className="relative">
-                            <button
-                              onClick={() => copyCode(section.code!, index)}
-                              className="absolute top-2 right-2 p-1.5 rounded-md bg-muted/80 hover:bg-muted transition-colors"
-                            >
-                              {copiedIndex === index ? (
-                                <Check className="h-3.5 w-3.5 text-green-400" />
-                              ) : (
-                                <Copy className="h-3.5 w-3.5 text-muted-foreground" />
-                              )}
-                            </button>
-                            <pre className="bg-muted/50 border border-border rounded-lg p-4 overflow-x-auto text-sm font-mono text-foreground">
-                              <code>{section.code}</code>
-                            </pre>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-              <div className="flex gap-4 mt-6">
-                <Button variant="outline" size="lg" className="flex-1" onClick={handleBack}>
+              <NotesDisplay data={notesData} />
+
+              <div className="flex gap-4 mt-8">
+                <Button variant="outline" size="lg" className="flex-1 border-[hsl(240,15%,20%)] text-[hsl(240,15%,70%)] hover:bg-[hsl(240,15%,12%)]" onClick={handleBack}>
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back
                 </Button>
