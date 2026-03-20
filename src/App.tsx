@@ -15,6 +15,7 @@ import RoleSelection from "./pages/RoleSelection";
 import AIInterview from "./pages/AIInterview";
 import LiveSessions from "./pages/LiveSessions";
 import ExamPractice from "./pages/ExamPractice";
+import Notes from "./pages/Notes";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,6 +40,7 @@ const App = () => {
             <Route path="/ai-interview" element={<AIInterview />} />
             <Route path="/live-sessions" element={<LiveSessions />} />
             <Route path="/exam-practice" element={<ExamPractice />} />
+            <Route path="/notes" element={<Notes />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
