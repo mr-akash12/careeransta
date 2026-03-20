@@ -21,20 +21,45 @@ serve(async (req) => {
       });
     }
 
-    const prompt = `You are an expert educator. Generate comprehensive study notes on the subtopic "${subtopic}" under the main topic "${topic}".
+    const prompt = `You are an expert educator creating comprehensive study notes on "${subtopic}" under "${topic}".
 
-Return a JSON array of sections. Each section has:
-- "heading": a clear section title
-- "content": detailed explanation (use bullet points with "•", keep it clear and beginner-friendly, include key definitions and concepts)
-- "code": (optional) a relevant code example if applicable. Only include for programming topics.
+Return a JSON object with this EXACT structure:
+{
+  "title": "${subtopic}",
+  "subtitle": "One line description",
+  "tags": ["tag1", "tag2", "tag3"],
+  "sections": [
+    {
+      "heading": "Section Title",
+      "icon": "emoji",
+      "blocks": [
+        { "type": "text", "content": "Explanation text. Use <hl>word</hl> for highlights." },
+        { "type": "real-world", "content": "A real-world example or analogy" },
+        { "type": "code", "lang": "python", "code": "actual code here" },
+        { "type": "info", "variant": "tip", "content": "A helpful tip" },
+        { "type": "info", "variant": "warn", "content": "A warning" },
+        { "type": "info", "variant": "note", "content": "An important note" },
+        { "type": "math", "title": "FORMULA NAME", "content": "formula = expression\\nwhere x = meaning" },
+        { "type": "table", "headers": ["Col1", "Col2"], "rows": [["val1", "val2"]] },
+        { "type": "output", "content": "Expected output text" }
+      ]
+    }
+  ]
+}
 
-Generate 4-6 sections covering the subtopic thoroughly. Include practical examples, key points to remember, and common pitfalls.
+RULES:
+- Generate 5-8 rich sections covering the subtopic thoroughly
+- Each section MUST have 3-6 blocks of MIXED types (don't just use text+code)
+- Include at least 2 code blocks, 1 real-world example, 1 info box, and 1 table across all sections
+- For programming topics, include practical code examples with comments
+- For theory topics, include formulas/math boxes where relevant
+- Use <hl>word</hl> tags in text for highlighting important terms
+- Code must be complete and runnable where possible
+- info variant can be: "tip", "warn", "note", "danger"
+- Keep explanations beginner-friendly but thorough
+- Include common pitfalls and best practices
 
-Return ONLY valid JSON array, no markdown wrapping. Example format:
-[
-  {"heading": "Introduction", "content": "...", "code": "..."},
-  {"heading": "Key Concepts", "content": "..."}
-]`;
+Return ONLY valid JSON, no markdown wrapping.`;
 
     const response = await fetch("https://api.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -45,7 +70,7 @@ Return ONLY valid JSON array, no markdown wrapping. Example format:
       body: JSON.stringify({
         model: "google/gemini-2.5-flash",
         messages: [
-          { role: "system", content: "You are a helpful educator that returns only valid JSON." },
+          { role: "system", content: "You are a helpful educator that returns only valid JSON with rich structured content." },
           { role: "user", content: prompt },
         ],
         temperature: 0.7,
@@ -62,14 +87,14 @@ Return ONLY valid JSON array, no markdown wrapping. Example format:
     const raw = data.choices?.[0]?.message?.content || "";
 
     // Parse JSON from response
-    const jsonMatch = raw.match(/\[[\s\S]*\]/);
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
       throw new Error("Could not parse notes from AI response");
     }
 
-    const sections = JSON.parse(jsonMatch[0]);
+    const result = JSON.parse(jsonMatch[0]);
 
-    return new Response(JSON.stringify({ success: true, sections }), {
+    return new Response(JSON.stringify({ success: true, ...result }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
