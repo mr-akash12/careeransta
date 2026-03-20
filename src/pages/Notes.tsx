@@ -41,6 +41,16 @@ const Notes = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set());
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredTopics = useMemo(() => {
+    if (!searchQuery.trim()) return topics;
+    const q = searchQuery.toLowerCase();
+    return topics.filter(t =>
+      t.label.toLowerCase().includes(q) ||
+      t.description.toLowerCase().includes(q)
+    );
+  }, [searchQuery]);
 
   const handleGenerateNotes = async () => {
     if (!selectedTopic || !selectedSubtopic) return;
