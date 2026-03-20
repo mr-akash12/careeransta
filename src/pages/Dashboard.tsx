@@ -92,6 +92,15 @@ const StudentDashboard = ({ user, onSignOut }: DashboardProps) => {
       stats: { label: "Questions", value: "156", trend: "85% accuracy" },
       href: "/exam-practice",
     },
+    {
+      id: "notes",
+      icon: FileText,
+      title: "Study Notes",
+      description: "AI-generated study notes on Python, SQL, Machine Learning, DSA and more. Learn at your pace.",
+      gradient: "accent",
+      stats: { label: "Topics", value: "8", trend: "New!" },
+      href: "/notes",
+    },
   ];
 
   const stats = [
