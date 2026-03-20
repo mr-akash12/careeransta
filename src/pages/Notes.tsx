@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, FileText, Sparkles, ArrowRight, ChevronDown, ChevronUp, Copy, Check } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { ArrowLeft, FileText, Sparkles, ArrowRight, ChevronDown, ChevronUp, Copy, Check, Search } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { toast } from "sonner";
 
