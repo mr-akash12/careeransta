@@ -15,6 +15,7 @@ import RoleSelection from "./pages/RoleSelection";
 import AIInterview from "./pages/AIInterview";
 import LiveSessions from "./pages/LiveSessions";
 import ExamPractice from "./pages/ExamPractice";
+import Notes from "./pages/Notes";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
