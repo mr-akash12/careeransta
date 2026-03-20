@@ -5,6 +5,7 @@ import {
   Brain, 
   Users, 
   BookOpen, 
+  FileText,
   ArrowRight,
   LogOut,
   TrendingUp,
