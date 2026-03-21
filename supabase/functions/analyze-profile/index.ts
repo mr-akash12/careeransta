@@ -151,8 +151,22 @@ IMPORTANT:
       throw new Error("AI API failed");
     }
 
-    const data = await response.json();
+    const responseText = await response.text();
+    if (!responseText || responseText.trim().length === 0) {
+      throw new Error("AI returned empty response. Please try again.");
+    }
+    
+    let data;
+    try {
+      data = JSON.parse(responseText);
+    } catch {
+      console.error("Failed to parse AI gateway response:", responseText.slice(0, 500));
+      throw new Error("AI returned invalid response. Please try again.");
+    }
+    
     const raw = data.choices?.[0]?.message?.content || "";
+    if (!raw) throw new Error("AI returned no content. Please try again.");
+    
     const match = raw.match(/\{[\s\S]*\}/);
     if (!match) throw new Error("Could not parse AI response");
 
