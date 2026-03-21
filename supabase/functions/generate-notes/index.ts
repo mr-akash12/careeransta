@@ -12,7 +12,8 @@ serve(async (req) => {
   }
 
   try {
-    const { topic, subtopic } = await req.json();
+    const { topic, subtopic, language } = await req.json();
+    const isHindi = language === "hi";
 
     if (!topic || !subtopic) {
       return new Response(JSON.stringify({ error: "Topic and subtopic are required" }), {
@@ -21,7 +22,13 @@ serve(async (req) => {
       });
     }
 
+    const languageInstruction = isHindi
+      ? `IMPORTANT: Write ALL explanations, descriptions, real-world examples, info boxes, and text blocks in Hinglish (Hindi written in English script). Example: "Variable ek container hai jo data store karta hai." Code comments bhi Hinglish mein likho. Code syntax (Python/JS) English mein rahega. Math formulas English notation mein rahenge.`
+      : `Write all content in clear English.`;
+
     const prompt = `You are an expert educator creating comprehensive study notes on "${subtopic}" under "${topic}".
+
+${languageInstruction}
 
 Return a JSON object with this EXACT structure:
 {
@@ -39,7 +46,7 @@ Return a JSON object with this EXACT structure:
         { "type": "info", "variant": "tip", "content": "A helpful tip" },
         { "type": "info", "variant": "warn", "content": "A warning" },
         { "type": "info", "variant": "note", "content": "An important note" },
-        { "type": "math", "title": "FORMULA NAME", "content": "formula = expression\\nwhere x = meaning" },
+        { "type": "math", "title": "FORMULA NAME", "content": "formula = expression\nwhere x = meaning" },
         { "type": "table", "headers": ["Col1", "Col2"], "rows": [["val1", "val2"]] },
         { "type": "output", "content": "Expected output text" }
       ]
@@ -49,15 +56,13 @@ Return a JSON object with this EXACT structure:
 
 RULES:
 - Generate 5-8 rich sections covering the subtopic thoroughly
-- Each section MUST have 3-6 blocks of MIXED types (don't just use text+code)
+- Each section MUST have 3-6 blocks of MIXED types
 - Include at least 2 code blocks, 1 real-world example, 1 info box, and 1 table across all sections
 - For programming topics, include practical code examples with comments
-- For theory topics, include formulas/math boxes where relevant
 - Use <hl>word</hl> tags in text for highlighting important terms
 - Code must be complete and runnable where possible
 - info variant can be: "tip", "warn", "note", "danger"
 - Keep explanations beginner-friendly but thorough
-- Include common pitfalls and best practices
 
 Return ONLY valid JSON, no markdown wrapping.`;
 
@@ -86,7 +91,6 @@ Return ONLY valid JSON, no markdown wrapping.`;
     const data = await response.json();
     const raw = data.choices?.[0]?.message?.content || "";
 
-    // Parse JSON from response
     const jsonMatch = raw.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
       throw new Error("Could not parse notes from AI response");

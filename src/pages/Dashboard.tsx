@@ -6,6 +6,7 @@ import {
   Users, 
   BookOpen, 
   FileText,
+  Search,
   ArrowRight,
   LogOut,
   TrendingUp,
@@ -91,6 +92,24 @@ const StudentDashboard = ({ user, onSignOut }: DashboardProps) => {
       gradient: "primary",
       stats: { label: "Questions", value: "156", trend: "85% accuracy" },
       href: "/exam-practice",
+    },
+    {
+      id: "notes",
+      icon: FileText,
+      title: "Study Notes",
+      description: "Complete Python & ML notes with theory, code, math and real-life examples. Hindi & English both!",
+      gradient: "accent",
+      stats: { label: "Topics", value: "14", trend: "Hindi + English" },
+      href: "/notes",
+    },
+    {
+      id: "analyzer",
+      icon: Search,
+      title: "Profile Analyzer",
+      description: "Paste your LinkedIn profile — get ATS score, keyword gaps, and a 30-day improvement plan instantly.",
+      gradient: "primary",
+      stats: { label: "Avg Score", value: "72%", trend: "AI Powered" },
+      href: "/analyzer",
     },
   ];
 
