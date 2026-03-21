@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -16,6 +17,7 @@ import AIInterview from "./pages/AIInterview";
 import LiveSessions from "./pages/LiveSessions";
 import ExamPractice from "./pages/ExamPractice";
 import Notes from "./pages/Notes";
+import Analyzer from "./pages/Analyzer";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +30,7 @@ const App = () => {
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <LanguageProvider>
             <AuthProvider>
               <Routes>
                 <Route path="/" element={<Index />} />
@@ -41,10 +44,12 @@ const App = () => {
             <Route path="/live-sessions" element={<LiveSessions />} />
             <Route path="/exam-practice" element={<ExamPractice />} />
             <Route path="/notes" element={<Notes />} />
+            <Route path="/analyzer" element={<Analyzer />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </AuthProvider>
+            </LanguageProvider>
           </BrowserRouter>
         </TooltipProvider>
       </QueryClientProvider>
