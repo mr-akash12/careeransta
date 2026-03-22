@@ -1,155 +1,85 @@
 import { Link } from "react-router-dom";
-import { Mail, Phone, MapPin, Twitter, Linkedin, Github } from "lucide-react";
 import logo from "@/assets/logo.png";
 
 const Footer = () => {
-  const links = {
-    product: [
-      { label: "AI Mock Interview", href: "#" },
-      { label: "Live Sessions", href: "#" },
-      { label: "Exam Practice", href: "#" },
-      { label: "Pricing", href: "#pricing" },
-    ],
-    company: [
-      { label: "About Us", href: "/about" },
-      { label: "Careers", href: "#" },
-      { label: "Blog", href: "#" },
-      { label: "Contact", href: "/contact" },
-    ],
-    support: [
-      { label: "Help Center", href: "#" },
-      { label: "Privacy Policy", href: "#" },
-      { label: "Terms of Service", href: "#" },
-      { label: "FAQ", href: "#" },
-    ],
-  };
-
-  const socialLinks = [
-    { icon: Twitter, href: "#", label: "Twitter" },
-    { icon: Linkedin, href: "#", label: "LinkedIn" },
-    { icon: Github, href: "#", label: "GitHub" },
-  ];
-
   return (
-    <footer className="bg-card border-t border-border">
-      <div className="container mx-auto px-4 lg:px-8 py-16">
-        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12">
-          {/* Brand */}
-          <div className="lg:col-span-2">
-            <Link to="/" className="flex items-center gap-2 mb-4 group">
-              <img src={logo} alt="CareerANSTA" className="h-10 object-contain" />
-              <span className="font-display text-2xl font-extrabold tracking-wide flex items-center">
-                <span className="text-white">Career</span><span className="text-[#ff9f1c]">ANSTA</span>
-              </span>
-            </Link>
-            <p className="text-muted-foreground mb-6 max-w-sm">
-              Empowering students and professionals with AI-powered career guidance, mock interviews, and personalized exam preparation.
-            </p>
-            <div className="space-y-3">
-              <div className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
-                <Mail className="h-4 w-4 text-primary" />
-                <span className="text-sm">support@careeransta.com</span>
-              </div>
-              <div className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
-                <Phone className="h-4 w-4 text-primary" />
-                <span className="text-sm">+91 966874****</span>
-              </div>
-              <div className="flex items-center gap-3 text-muted-foreground hover:text-primary transition-colors">
-                <MapPin className="h-4 w-4 text-primary" />
-                <span className="text-sm">Bangalore, India</span>
-              </div>
-            </div>
-
-            {/* Social Links */}
-            <div className="flex items-center gap-3 mt-6">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  className="h-10 w-10 rounded-lg bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-white transition-all duration-200"
-                  aria-label={social.label}
-                >
-                  <social.icon className="h-4 w-4" />
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {/* Links */}
-          <div>
-            <h4 className="font-semibold text-foreground mb-4">Product</h4>
-            <ul className="space-y-3">
-              {links.product.map((link) => (
-                <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-semibold text-foreground mb-4">Company</h4>
-            <ul className="space-y-3">
-              {links.company.map((link) => (
-                <li key={link.label}>
-                  {link.href.startsWith("/") ? (
-                    <Link
-                      to={link.href}
-                      className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      {link.label}
-                    </Link>
-                  ) : (
-                    <a
-                      href={link.href}
-                      className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                    >
-                      {link.label}
-                    </a>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-semibold text-foreground mb-4">Support</h4>
-            <ul className="space-y-3">
-              {links.support.map((link) => (
-                <li key={link.label}>
-                  <a
-                    href={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+    <footer className="border-t border-border px-6 lg:px-14 pt-16 pb-10 relative z-[1]">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1fr] gap-12 mb-12">
+        {/* Brand */}
+        <div>
+          <Link to="/" className="flex items-center gap-2.5 mb-3">
+            <img src={logo} alt="CareerANSTA" className="h-8 object-contain" />
+            <span className="font-display text-[15px] font-black">
+              <span className="text-foreground">Career</span>
+              <span className="text-primary">ANSTA</span>
+            </span>
+          </Link>
+          <p className="text-[13px] text-muted-foreground max-w-[220px] leading-relaxed">
+            AI-powered career acceleration for the next generation of professionals.
+          </p>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-muted-foreground">
-            © 2026 CareerANSTA. All rights reserved.
-          </p>
-          <div className="flex items-center gap-6">
-            <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-              Privacy
+        {/* Product */}
+        <div>
+          <h4 className="font-display text-[10px] font-bold tracking-wider text-foreground mb-4">Product</h4>
+          <ul className="space-y-2.5">
+            {["AI Resume", "Mock Interviews", "Mock Tests", "Smart Notes"].map((l) => (
+              <li key={l}>
+                <a href="#" className="text-[13px] text-muted-foreground hover:text-primary transition-colors">{l}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Company */}
+        <div>
+          <h4 className="font-display text-[10px] font-bold tracking-wider text-foreground mb-4">Company</h4>
+          <ul className="space-y-2.5">
+            {[
+              { label: "About", href: "/about" },
+              { label: "Blog", href: "#" },
+              { label: "Careers", href: "#" },
+              { label: "Contact", href: "/contact" },
+            ].map((l) => (
+              <li key={l.label}>
+                {l.href.startsWith("/") ? (
+                  <Link to={l.href} className="text-[13px] text-muted-foreground hover:text-primary transition-colors">
+                    {l.label}
+                  </Link>
+                ) : (
+                  <a href={l.href} className="text-[13px] text-muted-foreground hover:text-primary transition-colors">{l.label}</a>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Legal */}
+        <div>
+          <h4 className="font-display text-[10px] font-bold tracking-wider text-foreground mb-4">Legal</h4>
+          <ul className="space-y-2.5">
+            {["Privacy Policy", "Terms of Service", "Refund Policy"].map((l) => (
+              <li key={l}>
+                <a href="#" className="text-[13px] text-muted-foreground hover:text-primary transition-colors">{l}</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      {/* Bottom */}
+      <div className="flex flex-col md:flex-row items-center justify-between border-t border-border pt-7 gap-4">
+        <div className="text-[11px] text-muted-foreground">© 2026 CareerANSTA. All rights reserved.</div>
+        <div className="flex gap-2.5">
+          {["X", "in", "ig"].map((s) => (
+            <a
+              key={s}
+              href="#"
+              className="w-[34px] h-[34px] rounded-lg border border-border flex items-center justify-center text-xs text-muted-foreground hover:border-primary hover:text-primary transition-all"
+            >
+              {s}
             </a>
-            <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-              Terms
-            </a>
-            <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-              Cookies
-            </a>
-          </div>
+          ))}
         </div>
       </div>
     </footer>
