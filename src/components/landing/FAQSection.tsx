@@ -16,63 +16,57 @@ const faqs = [
   },
   {
     question: "How can CareerANSTA help me find a job or internship?",
-    answer: "CareerANSTA prepares you for real-world interviews through AI-powered mock interviews that simulate actual interview scenarios. You'll receive detailed feedback on your answers, communication skills, and areas for improvement, giving you the confidence to ace your actual interviews."
+    answer: "CareerANSTA prepares you for real-world interviews through AI-powered mock interviews that simulate actual interview scenarios. You'll receive detailed feedback on your answers, communication skills, and areas for improvement."
   },
   {
     question: "What is an AI Interview?",
-    answer: "An AI Interview is a voice-based mock interview powered by artificial intelligence. Our AI interviewer asks you questions relevant to your target role, listens to your responses in real-time, and provides constructive feedback just like a real interviewer would."
+    answer: "An AI Interview is a voice-based mock interview powered by artificial intelligence. Our AI interviewer asks you questions relevant to your target role, listens to your responses in real-time, and provides constructive feedback."
   },
   {
     question: "How do I take an AI interview on CareerANSTA?",
-    answer: "Simply sign up, select your target role (like Data Analyst, Software Engineer, etc.), upload your resume if desired, and start your mock interview. The AI will ask questions, listen to your answers via microphone, and provide detailed feedback at the end."
+    answer: "Simply sign up, select your target role, upload your resume if desired, and start your mock interview. The AI will ask questions, listen to your answers via microphone, and provide detailed feedback at the end."
   },
   {
     question: "What types of exams can I practice?",
-    answer: "CareerANSTA offers exam practice for various boards and subjects including CBSE, ICSE, State Boards, and competitive exam preparation. You can customize difficulty levels and question types to match your specific needs."
+    answer: "CareerANSTA offers exam practice for various boards and subjects including CBSE, ICSE, State Boards, and competitive exam preparation. You can customize difficulty levels and question types."
   },
   {
     question: "How accurate is the AI feedback?",
-    answer: "Our AI is trained on thousands of successful interview patterns and industry standards. It evaluates your responses based on content relevance, communication clarity, and professional presentation to give you actionable, accurate feedback."
+    answer: "Our AI is trained on thousands of successful interview patterns and industry standards. It evaluates your responses based on content relevance, communication clarity, and professional presentation."
   },
   {
     question: "Can I practice interviews for specific roles?",
-    answer: "Absolutely! CareerANSTA supports interview practice for various roles including Data Analyst, Software Engineer, Product Manager, Marketing, HR, and many more. Each interview is tailored to the specific skills and questions relevant to your target role."
+    answer: "Absolutely! CareerANSTA supports interview practice for various roles including Data Analyst, Software Engineer, Product Manager, Marketing, HR, and many more."
   }
 ];
 
 const FAQSection = () => {
   return (
-    <section id="faq" className="py-20 md:py-28">
-      <div className="container mx-auto px-4 md:px-6">
-        {/* Header */}
-        <div className="text-center mb-12 md:mb-16">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-4">
-            Frequently Asked Questions
-          </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Find answers to common questions about CareerANSTA and how it can help you achieve your career goals.
-          </p>
-        </div>
+    <section id="faq" className="py-28 px-6 lg:px-14 max-w-[1200px] mx-auto relative z-[1]">
+      <div className="text-center mb-14">
+        <span className="text-[9px] tracking-[3.5px] uppercase text-primary block mb-3.5">FAQ</span>
+        <h2 className="font-display text-[clamp(28px,4vw,54px)] font-black tracking-tight leading-[1.1] text-foreground mb-4">
+          Questions?<br /><span className="text-primary">We got answers.</span>
+        </h2>
+      </div>
 
-        {/* FAQ Accordion */}
-        <div className="max-w-3xl mx-auto">
-          <Accordion type="single" collapsible className="space-y-4">
-            {faqs.map((faq, index) => (
-              <AccordionItem
-                key={index}
-                value={`item-${index}`}
-                className="border border-border rounded-xl px-6 bg-card/50 backdrop-blur-sm hover:border-primary/30 transition-colors"
-              >
-                <AccordionTrigger className="text-left text-base md:text-lg font-medium py-5 hover:no-underline">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground pb-5">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
+      <div className="max-w-3xl mx-auto">
+        <Accordion type="single" collapsible className="space-y-3">
+          {faqs.map((faq, index) => (
+            <AccordionItem
+              key={index}
+              value={`item-${index}`}
+              className="border border-border rounded-[16px] px-6 bg-card hover:border-primary/20 transition-colors"
+            >
+              <AccordionTrigger className="text-left text-sm md:text-base font-medium py-5 hover:no-underline text-foreground">
+                {faq.question}
+              </AccordionTrigger>
+              <AccordionContent className="text-[13px] text-muted-foreground pb-5 leading-relaxed">
+                {faq.answer}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
       </div>
     </section>
   );
