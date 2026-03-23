@@ -42,6 +42,23 @@ const TestimonialsSection = () => {
 
 const TestimonialCard = ({ t }: { t: (typeof testimonials)[0] }) => {
   const ref = useRef<HTMLDivElement>(null);
+  const stateRef = useRef({ tX: 0, tY: 0, cX: 0, cY: 0, rafId: null as number | null });
+
+  const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
+  const animate = useCallback(() => {
+    const s = stateRef.current;
+    const el = ref.current;
+    if (!el) return;
+    s.cX = lerp(s.cX, s.tX, 0.09);
+    s.cY = lerp(s.cY, s.tY, 0.09);
+    el.style.transform = `translateY(-6px) rotateX(${s.cX}deg) rotateY(${s.cY}deg)`;
+    if (Math.abs(s.cX - s.tX) > 0.01 || Math.abs(s.cY - s.tY) > 0.01) {
+      s.rafId = requestAnimationFrame(animate);
+    } else {
+      s.rafId = null;
+    }
+  }, []);
 
   const handleMove = useCallback((e: React.MouseEvent) => {
     const el = ref.current;
@@ -49,11 +66,25 @@ const TestimonialCard = ({ t }: { t: (typeof testimonials)[0] }) => {
     const r = el.getBoundingClientRect();
     const x = (e.clientX - r.left) / r.width - 0.5;
     const y = (e.clientY - r.top) / r.height - 0.5;
-    el.style.transform = `translateY(-6px) rotateX(${-y * 6}deg) rotateY(${x * 6}deg)`;
-  }, []);
+    stateRef.current.tX = -y * 6;
+    stateRef.current.tY = x * 6;
+    if (!stateRef.current.rafId) stateRef.current.rafId = requestAnimationFrame(animate);
+  }, [animate]);
 
   const handleLeave = useCallback(() => {
-    if (ref.current) ref.current.style.transform = "";
+    stateRef.current.tX = 0;
+    stateRef.current.tY = 0;
+    const reset = () => {
+      const s = stateRef.current;
+      const el = ref.current;
+      if (!el) return;
+      s.cX = lerp(s.cX, 0, 0.07);
+      s.cY = lerp(s.cY, 0, 0.07);
+      el.style.transform = `translateY(0px) rotateX(${s.cX}deg) rotateY(${s.cY}deg)`;
+      if (Math.abs(s.cX) > 0.01 || Math.abs(s.cY) > 0.01) requestAnimationFrame(reset);
+      else el.style.transform = "";
+    };
+    requestAnimationFrame(reset);
   }, []);
 
   return (
@@ -61,7 +92,7 @@ const TestimonialCard = ({ t }: { t: (typeof testimonials)[0] }) => {
       ref={ref}
       onMouseMove={handleMove}
       onMouseLeave={handleLeave}
-      className="bg-card border border-border rounded-[20px] p-8 transition-all duration-300 hover:border-primary/[0.18] hover:-translate-y-1.5 hover:shadow-[0_24px_80px_rgba(0,0,0,0.6)]"
+      className="bg-card border border-border rounded-[20px] p-8 transition-all duration-300 hover:border-primary/[0.18] hover:shadow-[0_24px_80px_rgba(0,0,0,0.6)]"
       style={{ transformStyle: "preserve-3d" }}
     >
       <div className="font-display text-4xl text-primary/25 leading-none mb-3.5">"</div>
