@@ -11,14 +11,18 @@ import CTASection from "@/components/landing/CTASection";
 import Footer from "@/components/landing/Footer";
 import ParticleBackground from "@/components/landing/ParticleBackground";
 import ScrollProgress from "@/components/landing/ScrollProgress";
+import CustomCursor from "@/components/landing/CustomCursor";
+import RippleCanvas from "@/components/landing/RippleCanvas";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
+    <div className="min-h-screen bg-background overflow-x-hidden cursor-none">
       {/* Floating orbs */}
       <div className="orb w-[500px] h-[500px] bg-primary/[0.03] -top-[100px] -left-[100px]" style={{ animation: "orb-float1 12s ease-in-out infinite" }} />
       <div className="orb w-[400px] h-[400px] bg-info/[0.02] -bottom-[100px] -right-[50px]" style={{ animation: "orb-float2 15s ease-in-out infinite" }} />
 
+      <CustomCursor />
+      <RippleCanvas />
       <ParticleBackground />
       <ScrollProgress />
       <Navbar />
