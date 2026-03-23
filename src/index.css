@@ -361,6 +361,23 @@
     }
   }
 
+  @keyframes card-float {
+    0% { transform: translateY(0px) rotate(0deg); }
+    25% { transform: translateY(-5px) rotate(0.15deg); }
+    50% { transform: translateY(-9px) rotate(0deg); }
+    75% { transform: translateY(-4px) rotate(-0.15deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
+  }
+
+  .animate-band-shine {
+    animation: band-shine 3s ease-in-out infinite;
+  }
+
+  @keyframes band-shine {
+    0%, 100% { transform: translateX(-100%); }
+    50% { transform: translateX(100%); }
+  }
+
   /* Floating orbs */
   .orb {
     position: fixed;

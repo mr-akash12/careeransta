@@ -1,31 +1,52 @@
 import { Link } from "react-router-dom";
-import { useEffect, useRef } from "react";
+import { useRef, useCallback } from "react";
 
 const HeroSection = () => {
   const cardRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
+  const stateRef = useRef({ tX: 0, tY: 0, cX: 0, cY: 0, rafId: null as number | null });
 
-  useEffect(() => {
-    const wrap = cardRef.current;
+  const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
+  const animate = useCallback(() => {
+    const s = stateRef.current;
     const inner = innerRef.current;
-    if (!wrap || !inner) return;
+    if (!inner) return;
+    s.cX = lerp(s.cX, s.tX, 0.07);
+    s.cY = lerp(s.cY, s.tY, 0.07);
+    inner.style.transform = `rotateY(${s.cY}deg) rotateX(${s.cX}deg)`;
+    if (Math.abs(s.cX - s.tX) > 0.005 || Math.abs(s.cY - s.tY) > 0.005) {
+      s.rafId = requestAnimationFrame(animate);
+    } else {
+      s.rafId = null;
+    }
+  }, []);
 
-    const handleMove = (e: MouseEvent) => {
-      const r = wrap.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width - 0.5;
-      const y = (e.clientY - r.top) / r.height - 0.5;
-      inner.style.transform = `rotateY(${x * 14}deg) rotateX(${-y * 10}deg)`;
-    };
-    const handleLeave = () => {
-      inner.style.transform = "rotateY(0) rotateX(0)";
-    };
+  const handleMove = useCallback((e: React.MouseEvent) => {
+    const wrap = cardRef.current;
+    if (!wrap) return;
+    const r = wrap.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    stateRef.current.tX = -y * 10;
+    stateRef.current.tY = x * 14;
+    if (!stateRef.current.rafId) stateRef.current.rafId = requestAnimationFrame(animate);
+  }, [animate]);
 
-    wrap.addEventListener("mousemove", handleMove);
-    wrap.addEventListener("mouseleave", handleLeave);
-    return () => {
-      wrap.removeEventListener("mousemove", handleMove);
-      wrap.removeEventListener("mouseleave", handleLeave);
+  const handleLeave = useCallback(() => {
+    stateRef.current.tX = 0;
+    stateRef.current.tY = 0;
+    const reset = () => {
+      const s = stateRef.current;
+      const inner = innerRef.current;
+      if (!inner) return;
+      s.cX = lerp(s.cX, 0, 0.06);
+      s.cY = lerp(s.cY, 0, 0.06);
+      inner.style.transform = `rotateY(${s.cY}deg) rotateX(${s.cX}deg)`;
+      if (Math.abs(s.cX) > 0.005 || Math.abs(s.cY) > 0.005) requestAnimationFrame(reset);
+      else inner.style.transform = "rotateY(0) rotateX(0)";
     };
+    requestAnimationFrame(reset);
   }, []);
 
   return (
@@ -64,8 +85,14 @@ const HeroSection = () => {
       </div>
 
       {/* 3D Dashboard Card */}
-      <div ref={cardRef} className="mt-20 w-full max-w-[860px] animate-slide-up" style={{ perspective: "1200px", animationDelay: "0.4s" }}>
-        <div ref={innerRef} className="transition-transform duration-150 ease-out" style={{ transformStyle: "preserve-3d" }}>
+      <div
+        ref={cardRef}
+        onMouseMove={handleMove}
+        onMouseLeave={handleLeave}
+        className="mt-20 w-full max-w-[860px] animate-slide-up"
+        style={{ perspective: "1200px", animationDelay: "0.4s" }}
+      >
+        <div ref={innerRef} className="will-change-transform" style={{ transformStyle: "preserve-3d" }}>
           <div className="bg-card/80 border border-white/[0.07] rounded-[20px] overflow-hidden shadow-[0_0_0_1px_rgba(200,241,53,0.04),0_60px_140px_rgba(0,0,0,0.9)] backdrop-blur-xl">
             {/* Top bar */}
             <div className="bg-[hsl(240,14%,8%)] border-b border-white/5 px-5 py-3 flex items-center gap-2">

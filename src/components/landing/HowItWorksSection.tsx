@@ -1,3 +1,5 @@
+import { useRef, useCallback } from "react";
+
 const steps = [
   {
     num: "01",
@@ -45,27 +47,79 @@ const HowItWorksSection = () => {
 
       <div className="grid md:grid-cols-3 gap-4">
         {steps.map((step) => (
-          <div
-            key={step.num}
-            className="group bg-card border border-border rounded-[20px] p-10 relative overflow-hidden transition-all duration-300 hover:border-primary/20 hover:-translate-y-2 hover:shadow-[0_30px_80px_rgba(0,0,0,0.5)]"
-            style={{ transformStyle: "preserve-3d" }}
-          >
-            {/* Background number */}
-            <div className="font-display text-[80px] font-black text-primary/[0.04] leading-none absolute top-4 right-5">
-              {step.num}
-            </div>
-
-            <div className="relative z-10">
-              <div className="w-12 h-12 rounded-[13px] bg-primary/[0.06] border border-primary/[0.12] flex items-center justify-center text-primary mb-6">
-                {step.icon}
-              </div>
-              <h3 className="font-display text-[19px] font-bold text-foreground mb-2.5">{step.title}</h3>
-              <p className="text-[13px] text-muted-foreground leading-relaxed">{step.desc}</p>
-            </div>
-          </div>
+          <StepCard key={step.num} step={step} />
         ))}
       </div>
     </section>
+  );
+};
+
+const StepCard = ({ step }: { step: (typeof steps)[0] }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const stateRef = useRef({ tX: 0, tY: 0, cX: 0, cY: 0, rafId: null as number | null });
+
+  const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
+  const animate = useCallback(() => {
+    const s = stateRef.current;
+    const el = ref.current;
+    if (!el) return;
+    s.cX = lerp(s.cX, s.tX, 0.09);
+    s.cY = lerp(s.cY, s.tY, 0.09);
+    el.style.transform = `translateY(-8px) rotateX(${s.cX}deg) rotateY(${s.cY}deg)`;
+    if (Math.abs(s.cX - s.tX) > 0.01 || Math.abs(s.cY - s.tY) > 0.01) {
+      s.rafId = requestAnimationFrame(animate);
+    } else {
+      s.rafId = null;
+    }
+  }, []);
+
+  const handleMove = useCallback((e: React.MouseEvent) => {
+    const el = ref.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    stateRef.current.tX = -y * 8;
+    stateRef.current.tY = x * 8;
+    if (!stateRef.current.rafId) stateRef.current.rafId = requestAnimationFrame(animate);
+  }, [animate]);
+
+  const handleLeave = useCallback(() => {
+    stateRef.current.tX = 0;
+    stateRef.current.tY = 0;
+    const reset = () => {
+      const s = stateRef.current;
+      const el = ref.current;
+      if (!el) return;
+      s.cX = lerp(s.cX, 0, 0.07);
+      s.cY = lerp(s.cY, 0, 0.07);
+      el.style.transform = `translateY(0px) rotateX(${s.cX}deg) rotateY(${s.cY}deg)`;
+      if (Math.abs(s.cX) > 0.01 || Math.abs(s.cY) > 0.01) requestAnimationFrame(reset);
+      else el.style.transform = "";
+    };
+    requestAnimationFrame(reset);
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      onMouseMove={handleMove}
+      onMouseLeave={handleLeave}
+      className="group bg-card border border-border rounded-[20px] p-11 relative overflow-hidden transition-all duration-300 hover:border-primary/20 hover:shadow-[0_30px_80px_rgba(0,0,0,0.5)]"
+      style={{ transformStyle: "preserve-3d" }}
+    >
+      <div className="font-display text-[80px] font-black text-primary/[0.04] leading-none absolute top-4 right-5">
+        {step.num}
+      </div>
+      <div className="relative z-10">
+        <div className="w-12 h-12 rounded-[13px] bg-primary/[0.06] border border-primary/[0.12] flex items-center justify-center text-primary mb-6">
+          {step.icon}
+        </div>
+        <h3 className="font-display text-[19px] font-bold text-foreground mb-2.5">{step.title}</h3>
+        <p className="text-[13px] text-muted-foreground leading-relaxed">{step.desc}</p>
+      </div>
+    </div>
   );
 };
 
